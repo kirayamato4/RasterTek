@@ -1,5 +1,7 @@
 #pragma once
 
+#include "D3DClass.h"
+
 namespace GCV	// Graphics Class Value
 {
 	const bool FULL_SCREEN = false;
@@ -23,4 +25,5 @@ private:
 	bool Render();
 
 private:
+	D3DClass* m_pDirect3D;
 };

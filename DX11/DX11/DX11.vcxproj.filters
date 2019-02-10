@@ -36,6 +36,9 @@
     <ClCompile Include="GraphicsClass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="D3DClass.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SystemClass.h">
@@ -49,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>PreCompiledHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DClass.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
