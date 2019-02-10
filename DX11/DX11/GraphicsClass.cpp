@@ -3,6 +3,9 @@
 
 GraphicsClass::GraphicsClass()
 	: m_pDirect3D{ nullptr }
+	, m_pCamera{ nullptr }
+	, m_pModel{ nullptr }
+	, m_pColorShader{ nullptr }
 {
 
 }
@@ -21,16 +24,32 @@ bool GraphicsClass::Initialize( int width, int height, HWND hWnd )
 		return false;
 	}
 
+	m_pCamera = new CameraClass();
+	m_pCamera->SetPosition( 0.0f, 0.0f, -5.0f );
+
+	m_pModel = new ModelClass();
+	if( !m_pModel->Initialize( m_pDirect3D->GetDevice() ) )
+	{
+		MessageBox( hWnd, L"ModelClass initialize fail", L"Error", MB_OK );
+		return false;
+	}
+
+	m_pColorShader = new ColorShaderClass();
+	if( !m_pColorShader->Initialize( m_pDirect3D->GetDevice(), hWnd ) )
+	{
+		MessageBox( hWnd, L"ColorShaderClass initialize fail", L"Error", MB_OK );
+		return false;
+	}
+
 	return true;
 }
 
 void GraphicsClass::Shutdown()
 {
-	if( m_pDirect3D )
-	{
-		m_pDirect3D->Shutdown();
-		SAFE_DELETE( m_pDirect3D );
-	}
+	SAFE_SHUTDOWN( m_pColorShader );
+	SAFE_SHUTDOWN( m_pModel );
+	SAFE_DELETE( m_pCamera );
+	SAFE_SHUTDOWN( m_pDirect3D );
 }
 
 bool GraphicsClass::Frame()
@@ -43,7 +62,22 @@ bool GraphicsClass::Frame()
 
 bool GraphicsClass::Render()
 {
+	XMMATRIX world, view, projection;
+
+	ID3D11Device* pDevice = m_pDirect3D->GetDevice();
+	ID3D11DeviceContext* pDeviceContext = m_pDirect3D->GetDeviceContext();
+
 	m_pDirect3D->BeginScene( 0.0f, 0.0f, 1.0f, 1.0f );
+
+	m_pCamera->Render();
+
+	m_pDirect3D->GetWorldMatrix( world );
+	m_pCamera->GetViewMatrix( view );
+	m_pDirect3D->GetProjectionMatrix( projection );
+
+	m_pModel->Render( pDeviceContext );
+	if( !m_pColorShader->Render( pDeviceContext, m_pModel->GetIndexCount(), world, view, projection ) )
+		return false;
 
 	m_pDirect3D->EndScene();
 

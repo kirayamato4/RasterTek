@@ -1,6 +1,7 @@
 #pragma once
 
 class D3DClass
+	: public Align16
 {
 	DELETE_ASSIGN_COPY( D3DClass )
 public:
@@ -13,20 +14,16 @@ public:
 	void BeginScene( float red, float green, float blue, float alpha );
 	void EndScene();
 
-	ID3D11Device* GetDevice();
-	ID3D11DeviceContext* GetDeviceContext();
+	ID3D11Device* GetDevice() const;
+	ID3D11DeviceContext* GetDeviceContext() const;
 
-	void GetProjectionMatrix( XMMATRIX& projection );
-	void GetWorldMatrix( XMMATRIX& world );
-	void GetOrthoMatrix( XMMATRIX& ortho );
+	void GetProjectionMatrix( XMMATRIX& projection ) const;
+	void GetWorldMatrix( XMMATRIX& world ) const;
+	void GetOrthoMatrix( XMMATRIX& ortho ) const;
 
-	void GetVideoCardInfo( char* videoCard, int& memory );
+	void GetVideoCardInfo( char* videoCard, int& memory ) const;
 
 private:
-	bool	m_vsync;
-	int		m_videoMemory;
-	char	m_videoName[ 128 ];
-
 	IDXGISwapChain* m_pSwapChain;
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pDeviceContext;
@@ -39,4 +36,8 @@ private:
 	XMMATRIX m_projection;
 	XMMATRIX m_world;
 	XMMATRIX m_ortho;
+
+	char	m_videoName[ 128 ];
+	bool	m_vsync;
+	int		m_videoMemory;
 };

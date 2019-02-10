@@ -6,6 +6,7 @@
 #include "GraphicsClass.h"
 
 class SystemClass
+	: public Align16
 {
 	DELETE_ASSIGN_COPY( SystemClass )
 public:

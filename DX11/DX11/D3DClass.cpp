@@ -1,12 +1,6 @@
 #include "pch.h"
 #include "D3DClass.h"
 
-#define HR_ERROR_RETURN( hr, str ) \
-	if( FAILED( hr ) ) \
-	{\
-		MessageBox( hWnd, str, L"D3DClass Initialize fail", MB_OK );\
-	}
-
 D3DClass::D3DClass()
 	: m_pSwapChain{ nullptr }
 	, m_pDevice{ nullptr }
@@ -267,32 +261,32 @@ void D3DClass::EndScene()
 	}
 }
 
-ID3D11Device * D3DClass::GetDevice()
+ID3D11Device * D3DClass::GetDevice() const
 {
 	return m_pDevice;
 }
 
-ID3D11DeviceContext * D3DClass::GetDeviceContext()
+ID3D11DeviceContext * D3DClass::GetDeviceContext() const
 {
 	return m_pDeviceContext;
 }
 
-void D3DClass::GetProjectionMatrix( XMMATRIX & projection )
+void D3DClass::GetProjectionMatrix( XMMATRIX & projection ) const
 {
 	projection = m_projection;
 }
 
-void D3DClass::GetWorldMatrix( XMMATRIX & world )
+void D3DClass::GetWorldMatrix( XMMATRIX & world ) const
 {
 	world = m_world;
 }
 
-void D3DClass::GetOrthoMatrix( XMMATRIX & ortho )
+void D3DClass::GetOrthoMatrix( XMMATRIX & ortho ) const
 {
 	ortho = m_ortho;
 }
 
-void D3DClass::GetVideoCardInfo( char * videoCard, int & memory )
+void D3DClass::GetVideoCardInfo( char * videoCard, int & memory ) const
 {
 	strcpy_s( videoCard, 128, m_videoName );
 	memory = m_videoMemory;
