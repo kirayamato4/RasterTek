@@ -23,7 +23,7 @@ void ColorShaderClass::Shutdown()
 	ShutdownShader();
 }
 
-bool ColorShaderClass::Render( ID3D11DeviceContext * pDeviceContext, int indexCount, XMMATRIX& world, XMMATRIX& view, XMMATRIX& projection )
+bool ColorShaderClass::Render( ID3D11DeviceContext * pDeviceContext, int indexCount, const XMMATRIX& world, const XMMATRIX& view, const XMMATRIX& projection )
 {
 	if( !SetShaderParameters( pDeviceContext, world, view, projection ) )
 		return false;
@@ -181,17 +181,13 @@ void ColorShaderClass::OutputShaderErrorMessage( ID3D10Blob * pBlob, HWND hWnd, 
 	MessageBox( hWnd, L"Error compile shader", fileName, MB_OK );
 }
 
-bool ColorShaderClass::SetShaderParameters( ID3D11DeviceContext * pDeviceContext, XMMATRIX& world, XMMATRIX& view, XMMATRIX& projection )
+bool ColorShaderClass::SetShaderParameters( ID3D11DeviceContext * pDeviceContext, const XMMATRIX& world, const XMMATRIX& view, const XMMATRIX& projection )
 {
 	HRESULT hr;
 
-	XMMATRIX _world = world;
-	XMMATRIX _view = view;
-	XMMATRIX _projection = projection;
-
-	_world = XMMatrixTranspose( _world );
-	_view = XMMatrixTranspose( _view );
-	_projection = XMMatrixTranspose( _projection );
+	XMMATRIX _world = XMMatrixTranspose( world );
+	XMMATRIX _view = XMMatrixTranspose( view );;
+	XMMATRIX _projection = XMMatrixTranspose( projection );;
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr = nullptr;
