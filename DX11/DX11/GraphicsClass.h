@@ -3,7 +3,7 @@
 #include "D3DClass.h"
 #include "CameraClass.h"
 #include "ModelClass.h"
-#include "ColorShaderClass.h"
+#include "TextureShaderClass.h"
 
 namespace GCV	// Graphics Class Value
 {
@@ -31,5 +31,5 @@ private:
 	D3DClass* m_pDirect3D;
 	CameraClass* m_pCamera;
 	ModelClass* m_pModel;
-	ColorShaderClass* m_pColorShader;
+	TextureShaderClass* m_pTextureShader;
 };

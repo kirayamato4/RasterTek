@@ -5,7 +5,7 @@ GraphicsClass::GraphicsClass()
 	: m_pDirect3D{ nullptr }
 	, m_pCamera{ nullptr }
 	, m_pModel{ nullptr }
-	, m_pColorShader{ nullptr }
+	, m_pTextureShader{ nullptr }
 {
 
 }
@@ -28,16 +28,16 @@ bool GraphicsClass::Initialize( int width, int height, HWND hWnd )
 	m_pCamera->SetPosition( 0.0f, 0.0f, -5.0f );
 
 	m_pModel = new ModelClass();
-	if( !m_pModel->Initialize( m_pDirect3D->GetDevice() ) )
+	if( !m_pModel->Initialize( m_pDirect3D->GetDevice(), m_pDirect3D->GetDeviceContext(), "stone01.tga" ) )
 	{
 		MessageBox( hWnd, L"ModelClass initialize fail", L"Error", MB_OK );
 		return false;
 	}
 
-	m_pColorShader = new ColorShaderClass();
-	if( !m_pColorShader->Initialize( m_pDirect3D->GetDevice(), hWnd ) )
+	m_pTextureShader = new TextureShaderClass();
+	if( !m_pTextureShader->Initialize( m_pDirect3D->GetDevice(), hWnd ) )
 	{
-		MessageBox( hWnd, L"ColorShaderClass initialize fail", L"Error", MB_OK );
+		MessageBox( hWnd, L"TextureShaderClass initialize fail", L"Error", MB_OK );
 		return false;
 	}
 
@@ -46,7 +46,7 @@ bool GraphicsClass::Initialize( int width, int height, HWND hWnd )
 
 void GraphicsClass::Shutdown()
 {
-	SAFE_SHUTDOWN( m_pColorShader );
+	SAFE_SHUTDOWN( m_pTextureShader );
 	SAFE_SHUTDOWN( m_pModel );
 	SAFE_DELETE( m_pCamera );
 	SAFE_SHUTDOWN( m_pDirect3D );
@@ -76,7 +76,8 @@ bool GraphicsClass::Render()
 	m_pDirect3D->GetProjectionMatrix( projection );
 
 	m_pModel->Render( pDeviceContext );
-	if( !m_pColorShader->Render( pDeviceContext, m_pModel->GetIndexCount(), world, view, projection ) )
+
+	if( !m_pTextureShader->Render( pDeviceContext, m_pModel->GetIndexCount(), world, view, projection, m_pModel->GetTexture() ) )
 		return false;
 
 	m_pDirect3D->EndScene();
