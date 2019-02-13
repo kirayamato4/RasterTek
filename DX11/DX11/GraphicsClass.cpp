@@ -5,7 +5,8 @@ GraphicsClass::GraphicsClass()
 	: m_pDirect3D{ nullptr }
 	, m_pCamera{ nullptr }
 	, m_pModel{ nullptr }
-	, m_pTextureShader{ nullptr }
+	, m_pLightShader{ nullptr }
+	, m_pLight{ nullptr }
 {
 
 }
@@ -34,19 +35,24 @@ bool GraphicsClass::Initialize( int width, int height, HWND hWnd )
 		return false;
 	}
 
-	m_pTextureShader = new TextureShaderClass();
-	if( !m_pTextureShader->Initialize( m_pDirect3D->GetDevice(), hWnd ) )
+	m_pLightShader = new LightShaderClass();
+	if( !m_pLightShader->Initialize( m_pDirect3D->GetDevice(), hWnd ) )
 	{
 		MessageBox( hWnd, L"TextureShaderClass initialize fail", L"Error", MB_OK );
 		return false;
 	}
+
+	m_pLight = new LightClass();
+	m_pLight->SetDiffuseColor( 1.0f, 1.0f, 0.0f, 1.0f );
+	m_pLight->SetDirection( 0.0f, 0.0f, 1.0f );
 
 	return true;
 }
 
 void GraphicsClass::Shutdown()
 {
-	SAFE_SHUTDOWN( m_pTextureShader );
+	SAFE_DELETE( m_pLight );
+	SAFE_SHUTDOWN( m_pLightShader );
 	SAFE_SHUTDOWN( m_pModel );
 	SAFE_DELETE( m_pCamera );
 	SAFE_SHUTDOWN( m_pDirect3D );
@@ -54,13 +60,19 @@ void GraphicsClass::Shutdown()
 
 bool GraphicsClass::Frame()
 {
-	if( !Render() )
+	static float rotation = 0.0f;
+
+	rotation += 3.141592f * 0.01f;
+	if( rotation > 90.0f )
+		rotation -= 180.0f;
+
+	if( !Render( rotation ) )
 		return false;
 
 	return true;
 }
 
-bool GraphicsClass::Render()
+bool GraphicsClass::Render( float rotation )
 {
 	XMMATRIX world, view, projection;
 
@@ -75,9 +87,11 @@ bool GraphicsClass::Render()
 	m_pCamera->GetViewMatrix( view );
 	m_pDirect3D->GetProjectionMatrix( projection );
 
+	world *= XMMatrixRotationY( rotation );
+
 	m_pModel->Render( pDeviceContext );
 
-	if( !m_pTextureShader->Render( pDeviceContext, m_pModel->GetIndexCount(), world, view, projection, m_pModel->GetTexture() ) )
+	if( !m_pLightShader->Render( pDeviceContext, m_pModel->GetIndexCount(), world, view, projection, m_pModel->GetTexture(), m_pLight->GetDiffuseColor(), m_pLight->GetDirectoin() ) )
 		return false;
 
 	m_pDirect3D->EndScene();
