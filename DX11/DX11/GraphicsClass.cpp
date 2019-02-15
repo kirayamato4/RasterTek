@@ -5,6 +5,7 @@ GraphicsClass::GraphicsClass()
 	: m_pDirect3D{ nullptr }
 	, m_pCamera{ nullptr }
 	, m_pModel{ nullptr }
+	, m_pCube{ nullptr }
 	, m_pLightShader{ nullptr }
 	, m_pLight{ nullptr }
 {
@@ -28,10 +29,16 @@ bool GraphicsClass::Initialize( int width, int height, HWND hWnd )
 	m_pCamera = new CameraClass();
 	m_pCamera->SetPosition( 0.0f, 0.0f, -5.0f );
 
-	m_pModel = new ModelClass();
-	if( !m_pModel->Initialize( m_pDirect3D->GetDevice(), m_pDirect3D->GetDeviceContext(), "stone01.tga" ) )
+	m_pCube = new CubeClass;
+	if( !m_pCube->Initialize( m_pDirect3D->GetDevice(), m_pDirect3D->GetDeviceContext(), "cube.txt", L"a.dds" ) )
 	{
-		MessageBox( hWnd, L"ModelClass initialize fail", L"Error", MB_OK );
+		MessageBox( hWnd, L"CubeClass initialize fail", L"Error", MB_OK );
+		return false;
+	}
+	m_pText = new CubeClass;
+	if( !m_pText->Initialize( m_pDirect3D->GetDevice(), m_pDirect3D->GetDeviceContext(), "cube.txt", L"a.dds" ) )
+	{
+		MessageBox( hWnd, L"CubeClass initialize fail", L"Error", MB_OK );
 		return false;
 	}
 
@@ -43,7 +50,7 @@ bool GraphicsClass::Initialize( int width, int height, HWND hWnd )
 	}
 
 	m_pLight = new LightClass();
-	m_pLight->SetDiffuseColor( 1.0f, 1.0f, 0.0f, 1.0f );
+	m_pLight->SetDiffuseColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	m_pLight->SetDirection( 0.0f, 0.0f, 1.0f );
 
 	return true;
@@ -54,6 +61,8 @@ void GraphicsClass::Shutdown()
 	SAFE_DELETE( m_pLight );
 	SAFE_SHUTDOWN( m_pLightShader );
 	SAFE_SHUTDOWN( m_pModel );
+	SAFE_SHUTDOWN( m_pCube );
+	SAFE_SHUTDOWN( m_pText );
 	SAFE_DELETE( m_pCamera );
 	SAFE_SHUTDOWN( m_pDirect3D );
 }
@@ -61,6 +70,7 @@ void GraphicsClass::Shutdown()
 bool GraphicsClass::Frame()
 {
 	static float rotation = 0.0f;
+	static float red = 0.0f;
 
 	rotation += 3.141592f * 0.01f;
 	if( rotation > 90.0f )
@@ -89,10 +99,19 @@ bool GraphicsClass::Render( float rotation )
 
 	world *= XMMatrixRotationY( rotation );
 
-	m_pModel->Render( pDeviceContext );
-
+	/*m_pModel->Render( pDeviceContext );
 	if( !m_pLightShader->Render( pDeviceContext, m_pModel->GetIndexCount(), world, view, projection, m_pModel->GetTexture(), m_pLight->GetDiffuseColor(), m_pLight->GetDirectoin() ) )
+		return false;*/
+
+	m_pCube->Render( pDeviceContext );
+	if( !m_pLightShader->Render( pDeviceContext, m_pCube->GetIndexCount(), world, view, projection, m_pCube->GetTexture(), m_pLight->GetDiffuseColor(), m_pLight->GetDirectoin() ) )
 		return false;
+
+	world = XMMatrixTranslation( 2.0f, -1.0f, -1.0f );
+	m_pText->Render( pDeviceContext );
+	if( !m_pLightShader->Render( pDeviceContext, m_pText->GetIndexCount(), world, view, projection, m_pText->GetTexture(), m_pLight->GetDiffuseColor(), m_pLight->GetDirectoin() ) )
+		return false;
+	
 
 	m_pDirect3D->EndScene();
 

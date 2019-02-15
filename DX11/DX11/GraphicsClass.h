@@ -3,6 +3,7 @@
 #include "D3DClass.h"
 #include "CameraClass.h"
 #include "ModelClass.h"
+#include "CubeClass.h"
 #include "LightClass.h"
 #include "LightShaderClass.h"
 
@@ -32,6 +33,8 @@ private:
 	D3DClass* m_pDirect3D;
 	CameraClass* m_pCamera;
 	ModelClass* m_pModel;
+	CubeClass* m_pCube;
+	CubeClass* m_pText;
 
 	LightShaderClass* m_pLightShader;
 	LightClass* m_pLight;

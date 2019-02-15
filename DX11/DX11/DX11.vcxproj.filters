@@ -19,6 +19,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{b8448f6e-cb6a-4325-b901-20f80612599e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DXTex">
+      <UniqueIdentifier>{3eb99fac-0d3c-4b34-8e87-84acdba9dac0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -60,6 +63,12 @@
     <ClCompile Include="LightClass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="CubeClass.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>DXTex</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SystemClass.h">
@@ -97,6 +106,12 @@
     </ClInclude>
     <ClInclude Include="LightClass.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeClass.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>DXTex</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
