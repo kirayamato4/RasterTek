@@ -1,62 +1,64 @@
 #include "pch.h"
-#include "SystemClass.h"
+#include "WolfApp.h"
 
-SystemClass::SystemClass()
-	: m_input{ nullptr }
-	, m_graphics{ nullptr }
+WolfApp::WolfApp()
+	: m_pKeyboard{ nullptr }
+	, m_pRenderer{ nullptr }
+{
+	m_AppName = L"WindWolf";
+	m_ClassName = L"WindWolf";
+}
+WolfApp::WolfApp( LPCWSTR AppName, LPCWSTR ClassName )
+	: WolfApp()
+{
+	m_AppName = AppName;
+
+	if( nullptr == ClassName )
+		m_ClassName = m_AppName;
+	else
+		m_ClassName = ClassName;
+}
+WolfApp::~WolfApp()
 {
 }
-SystemClass::~SystemClass()
-{
-}
 
-bool SystemClass::Initialize()
+bool WolfApp::Init()
 {
 	int width = 0, height = 0;
-	InitializeWindows( width, height );
+	InitWindow( width, height );
 
-	m_input = new InputClass();
-	if( nullptr == m_input )
+	m_pKeyboard = new Keyboard();
+	if( nullptr == m_pKeyboard )
 	{
-		MessageBox( m_hWnd, L"InputClass Creating Fail", L"SystemClass::Initialize", MB_OK );
+		MessageBox( m_hWnd, L"InputClass Creating Fail", L"WolfApp::Initialize", MB_OK );
 		return false;
 	}
-	m_input->Initialize();
+	m_pKeyboard->Init();
 
-	m_graphics = new GraphicsClass();
-	if( nullptr == m_graphics )
+	m_pRenderer = new Renderer();
+	if( nullptr == m_pRenderer )
 	{
-		MessageBox( m_hWnd, L"GraphcisClass Creating Fail", L"SystemClass::Initialize", MB_OK );
+		MessageBox( m_hWnd, L"GraphcisClass Creating Fail", L"WolfApp::Initialize", MB_OK );
 		return false;
 	}
-	if( !m_graphics->Initialize( width, height, m_hWnd ) )
+	if( !m_pRenderer->Init( width, height, m_hWnd ) )
 	{
-		MessageBox( m_hWnd, L"GraphcisClass Initialize Fail", L"SystemClass::Initialize", MB_OK );
+		MessageBox( m_hWnd, L"GraphcisClass Initialize Fail", L"WolfApp::Initialize", MB_OK );
 		return false;
 	}
 
 	return true;
 }
 
-void SystemClass::Shutdown()
+void WolfApp::Release()
 {
-	if( m_graphics )
-	{
-		m_graphics->Shutdown();
-		delete m_graphics;
-		m_graphics = nullptr;
-	}
+	SAFE_TERMINATE( m_pRenderer );
+	SAFE_DELETE( m_pKeyboard );
 
-	if( m_input )
-	{
-		delete m_input;
-		m_input = nullptr;
-	}
-
-	ShutdownWindows();
+	TerminateWindow();
 }
 
-void SystemClass::Run()
+void WolfApp::Run()
 {
 	MSG msg = { 0 };
 	bool done = false, result;
@@ -75,59 +77,66 @@ void SystemClass::Run()
 		}
 		else
 		{
-			result = Frame();
+			result = Update();
 			if( !result )
 				done = true;
 		}
 	}
 }
 
-LRESULT SystemClass::MessageHandler( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+LRESULT WolfApp::MessageHandler( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
 	switch( uMsg )
 	{
-	case WM_KEYDOWN:
-	{
-		m_input->KeyDown( (unsigned int)wParam );
-		return 0;
-	}
+		case WM_KEYDOWN:
+		{
+			m_pKeyboard->KeyDown( (unsigned int)wParam );
+			return 0;
+		}
 
-	case WM_KEYUP:
-	{
+		case WM_KEYUP:
+		{
+			m_pKeyboard->KeyUp( (unsigned int)wParam );
+			return 0;
+		}
 
-		m_input->KeyUp( (unsigned int)wParam );
-		return 0;
-	}
-
-	default:
-	{
-		return DefWindowProc( hWnd, uMsg, wParam, lParam );
-	}
+		default:
+		{
+			return DefWindowProc( hWnd, uMsg, wParam, lParam );
+		}
 	}	// end switch
 }
 
-bool SystemClass::Frame()
+bool WolfApp::Update()
 {
-	if( m_input->IsKeyDown( VK_ESCAPE ) )
+	if( m_pKeyboard->IsKeyDown( VK_ESCAPE ) )
 		return false;
 
-	if( !m_graphics->Frame() )
+	if( m_pKeyboard->IsKeyDown( VK_UP ) )
+		m_pRenderer->CameraUpdate( VK_UP );
+	
+	if( m_pKeyboard->IsKeyDown( VK_DOWN ) )
+		m_pRenderer->CameraUpdate( VK_DOWN );
+
+	if( m_pKeyboard->IsKeyDown( VK_LEFT ) )
+		m_pRenderer->CameraUpdate( VK_LEFT );
+
+	if( m_pKeyboard->IsKeyDown( VK_RIGHT ) )
+		m_pRenderer->CameraUpdate( VK_RIGHT );
+
+	if( !m_pRenderer->Update() )
 		return false;
 
 	return true;
 }
 
-void SystemClass::InitializeWindows( int & width, int & height )
+void WolfApp::InitWindow( int & width, int & height )
 {
 	WNDCLASSEX wc;
 	DEVMODE dmScreenSettings;
 	int posX, posY;
 
-	gSystemClass = this;
-
 	m_hInstance = GetModuleHandle( NULL );
-
-	m_appName = L"Engine";
 
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc = WndProc;
@@ -139,7 +148,7 @@ void SystemClass::InitializeWindows( int & width, int & height )
 	wc.hCursor = LoadCursor( NULL, IDC_ARROW );
 	wc.hbrBackground = (HBRUSH)GetStockObject( BLACK_BRUSH );
 	wc.lpszMenuName = NULL;
-	wc.lpszClassName = m_appName;
+	wc.lpszClassName = m_ClassName;
 	wc.cbSize = sizeof( WNDCLASSEX );
 
 	RegisterClassEx( &wc );
@@ -147,7 +156,7 @@ void SystemClass::InitializeWindows( int & width, int & height )
 	width = GetSystemMetrics( SM_CXSCREEN );
 	height = GetSystemMetrics( SM_CYSCREEN );
 
-	if( GCV::FULL_SCREEN )
+	if( RendererValue::FULL_SCREEN )
 	{
 		memset( &dmScreenSettings, 0, sizeof( dmScreenSettings ) );
 		dmScreenSettings.dmSize = sizeof( dmScreenSettings );
@@ -172,25 +181,22 @@ void SystemClass::InitializeWindows( int & width, int & height )
 	}
 
 	// Create the window with the screen settings and get the handle to it.
-	m_hWnd = CreateWindowEx( WS_EX_APPWINDOW, m_appName, m_appName,
+	m_hWnd = CreateWindowEx( WS_EX_APPWINDOW, m_AppName, m_ClassName,
 							 WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
 							 posX, posY, width, height, NULL, NULL, m_hInstance, NULL );
+
+	gWolfApp = this;
+	g_hWnd = m_hWnd;
 
 	// Bring the window up on the screen and set it as main focus.
 	ShowWindow( m_hWnd, SW_SHOW );
 	SetForegroundWindow( m_hWnd );
 	SetFocus( m_hWnd );
-
-	// Hide the mouse cursor.
-	// ShowCursor( false );
 }
 
-void SystemClass::ShutdownWindows()
+void WolfApp::TerminateWindow()
 {
-	// Show the mouse cursor.
-	// ShowCursor( true );
-
-	if( GCV::FULL_SCREEN )
+	if( RendererValue::FULL_SCREEN )
 	{
 		ChangeDisplaySettings( nullptr, 0 );
 	}
@@ -198,7 +204,7 @@ void SystemClass::ShutdownWindows()
 	DestroyWindow( m_hWnd );
 	m_hWnd = nullptr;
 
-	UnregisterClass( m_appName, m_hInstance );
-	gSystemClass = nullptr;
+	UnregisterClass( m_ClassName, m_hInstance );
+	gWolfApp = nullptr;
 }
 

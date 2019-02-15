@@ -5,9 +5,9 @@ cbuffer LightBuffer
 {
 	float4 ambientColor;
 	float4 diffuseColor;
-	float3 lightDirection;
+	float4 specularColor; 
 	float specularPower;
-	float4 specularColor;
+	float3 lightDirection;
 };
 
 struct PixelInputType

@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "CameraClass.h"
+#include "Camera.h"
 
-CameraClass::CameraClass()
+Camera::Camera()
 	: m_px{ 0.0f }
 	, m_py{ 0.0f }
 	, m_pz{ 0.0f }
@@ -11,35 +11,53 @@ CameraClass::CameraClass()
 {
 }
 
-CameraClass::~CameraClass()
+Camera::~Camera()
 {
 }
 
-void CameraClass::SetPosition( float x, float y, float z )
+void Camera::SetPosition( float x, float y, float z )
 {
 	m_px = x;
 	m_py = y;
 	m_pz = z;
+
+	m_pos.x = x;
+	m_pos.y = y;
+	m_pos.z = z;
 }
 
-void CameraClass::SetRotation( float x, float y, float z )
+void Camera::SetRotation( float x, float y, float z )
 {
 	m_rx = x;
 	m_ry = y;
 	m_rz = z;
+
+	m_rot.x = x;
+	m_rot.y = y;
+	m_rot.z = z;
 }
 
-XMFLOAT3 CameraClass::GetPosition() const
+XMFLOAT3 Camera::GetPosition() const
 {
-	return XMFLOAT3( m_px, m_py, m_pz );
+	return m_pos;
 }
 
-XMFLOAT3 CameraClass::GetRotation() const
+XMFLOAT3 Camera::GetRotation() const
 {
-	return XMFLOAT3( m_rx, m_ry, m_rz );
+	return m_rot;
 }
 
-void CameraClass::Render()
+XMVECTOR Camera::GetPositionVector() const
+{
+	return XMLoadFloat3( &m_pos );
+}
+
+XMVECTOR Camera::GetRotationVector() const
+{
+	return XMLoadFloat3( &m_rot );
+}
+
+void Camera::Update()
 {
 	XMFLOAT3 up, pos, look;
 	XMVECTOR upV, posV, lookV;
@@ -68,7 +86,27 @@ void CameraClass::Render()
 	m_view = XMMatrixLookAtLH( posV, lookV, upV );
 }
 
-void CameraClass::GetViewMatrix( XMMATRIX & view ) const
+void Camera::GetViewMatrix( XMMATRIX & view ) const
 {
 	view = m_view;
+}
+
+void Camera::MoveForward()
+{
+	m_pz += 0.05f;
+}
+
+void Camera::MoveBackward()
+{
+	m_pz -= 0.05f;
+}
+
+void Camera::MoveLeft()
+{
+	m_px -= 0.05f;
+}
+
+void Camera::MoveRight()
+{
+	m_px += 0.05f;
 }

@@ -1,21 +1,21 @@
 #include "pch.h"
-#include "SystemClass.h"
+#include "WolfApp.h"
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdLine, int iCmdShow )
 {
-	SystemClass* system = new SystemClass();
+	WolfApp* app = new WolfApp();
 
-	if( !system )
+	if( !app )
 		return -1;
 
-	if( !system->Initialize() )
+	if( !app->Init() )
 		return -1;
 
-	system->Run();
+	app->Run();
 
-	system->Shutdown();
-	delete system;
-	system = nullptr;
+	app->Release();
+
+	SAFE_DELETE( app );
 
 	return 0;
 }

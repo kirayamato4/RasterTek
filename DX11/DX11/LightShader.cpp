@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "LightShaderClass.h"
+#include "LightShader.h"
 
-LightShaderClass::LightShaderClass()
+LightShader::LightShader()
 	: m_pVertexShader{ nullptr }
 	, m_pPixelShader{ nullptr }
 	, m_pInputLayout{ nullptr }
@@ -12,57 +12,34 @@ LightShaderClass::LightShaderClass()
 {
 }
 
-LightShaderClass::~LightShaderClass()
+LightShader::~LightShader()
 {
 }
 
-bool LightShaderClass::Initialize( ID3D11Device * pDevice, HWND hWnd )
+bool LightShader::Init( ID3D11Device * pDevice, HWND hWnd )
 {
-	return InitializeShader( pDevice, hWnd, L"LightVertexShader.hlsl", L"LightPixelShader.hlsl" );
+	return InitShader( pDevice, hWnd, L"LightVertexShader.hlsl", L"LightPixelShader.hlsl" );
 }
 
-void LightShaderClass::Shutdown()
+void LightShader::Terminate()
 {
-	ShutdownShader();
+	TerminateShader();
 }
 
-bool LightShaderClass::Render( 
-	ID3D11DeviceContext * pDeviceContext, 
-	int indexCount, 
-	const XMMATRIX & world, 
-	const XMMATRIX & view, 
-	const XMMATRIX & projection, 
-	ID3D11ShaderResourceView* pTexture, 
-	XMFLOAT4 ambientColor,
-	XMFLOAT4 diffuseColor,
-	XMFLOAT3 lightDirection,
-	XMVECTOR cameraPosition,
-	XMVECTOR specularColor,
-	float specularPower
-)
+bool LightShader::Render( ID3D11DeviceContext * pDeviceContext, int indexCount, MatrixBuffer& matrixBuffer, CameraBuffer& cameraBuffer, LightBuffer& lightBuffer, ID3D11ShaderResourceView * pTexture )
 {
-	if( !SetShaderParameters( 
-		pDeviceContext, 
-		world, 
-		view, 
-		projection, 
-		pTexture, 
-		ambientColor, 
-		diffuseColor, 
-		lightDirection,
-		cameraPosition,
-		specularColor,
-		specularPower
-		) 
-	)
+	if( !SetShaderParam( pDeviceContext, matrixBuffer, cameraBuffer, lightBuffer, pTexture ) )
+	{
+		MAKE_WARNING( L"LightShader Render Fail" );
 		return false;
+	}
 
 	RenderShader( pDeviceContext, indexCount );
 
 	return true;
 }
 
-bool LightShaderClass::InitializeShader( ID3D11Device * pDevice, HWND hWnd, WCHAR * vsFileName, WCHAR * psFileName )
+bool LightShader::InitShader( ID3D11Device * pDevice, HWND hWnd, WCHAR * vsFileName, WCHAR * psFileName )
 {
 	HRESULT hr = E_FAIL;
 	ID3D10Blob* pErrorMsg = nullptr;
@@ -204,60 +181,61 @@ bool LightShaderClass::InitializeShader( ID3D11Device * pDevice, HWND hWnd, WCHA
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	ZeroMemory( &matrixBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
 	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixBufferDesc.ByteWidth = sizeof( MatrixBufferType );
+	matrixBufferDesc.ByteWidth = sizeof( MatrixBuffer );
 	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
 
 	hr = pDevice->CreateBuffer( &matrixBufferDesc, nullptr, &m_pMatrixBuffer );
-	HR_ERROR_RETURN( hr, L"LightShaderClass CreaetMatrixBuffer" );
+	HR_ERROR_RETURN( hr, L"LightShader CreaetMatrixBuffer" );
 #pragma endregion
 
 #pragma region SETUP_CAMERA_BUFFER
 	D3D11_BUFFER_DESC cameraBufferDesc;
 	ZeroMemory( &cameraBufferDesc, sizeof( cameraBufferDesc ) );
 	cameraBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cameraBufferDesc.ByteWidth = sizeof( CameraBufferType );
+	cameraBufferDesc.ByteWidth = sizeof( CameraBuffer );
 	cameraBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cameraBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cameraBufferDesc.MiscFlags = 0;
 	cameraBufferDesc.StructureByteStride = 0;
 
 	hr = pDevice->CreateBuffer( &cameraBufferDesc, nullptr, &m_pCameraBuffer );
-	HR_ERROR_RETURN( hr, L"LightShaderClass CreateCameraBuffer" );
+	HR_ERROR_RETURN( hr, L"LightShader CreateCameraBuffer" );
 #pragma endregion
 
 #pragma region SETUP_LIGHT_BUFFER
 	D3D11_BUFFER_DESC lightBufferDesc;
 	ZeroMemory( &lightBufferDesc, sizeof( lightBufferDesc ) );
 	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	lightBufferDesc.ByteWidth = sizeof( LightBufferType );
+	lightBufferDesc.ByteWidth = sizeof( LightBuffer );
 	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	lightBufferDesc.MiscFlags = 0;
 	lightBufferDesc.StructureByteStride = 0;
 
 	hr = pDevice->CreateBuffer( &lightBufferDesc, nullptr, &m_pLightBuffer );
-	HR_ERROR_RETURN( hr, L"LightShaderClass CreaetLightBuffer" );
+	HR_ERROR_RETURN( hr, L"LightShader CreaetLightBuffer" );
 
 #pragma endregion;
 
 	return true;
 }
 
-void LightShaderClass::ShutdownShader()
+void LightShader::TerminateShader()
 {
 	SAFE_RELEASE( m_pLightBuffer );
 	SAFE_RELEASE( m_pCameraBuffer );
 	SAFE_RELEASE( m_pMatrixBuffer );
+
 	SAFE_RELEASE( m_pSamplerState );
 	SAFE_RELEASE( m_pInputLayout );
 	SAFE_RELEASE( m_pPixelShader );
 	SAFE_RELEASE( m_pVertexShader );
 }
 
-void LightShaderClass::OutputShaderErrorMessage( ID3D10Blob * pBlob, HWND hWnd, WCHAR * fileName )
+void LightShader::OutputShaderErrorMessage( ID3D10Blob * pBlob, HWND hWnd, WCHAR * fileName )
 {
 	char* compileErrors = (char*)pBlob->GetBufferPointer();
 	size_t bufferSize = pBlob->GetBufferSize();
@@ -271,38 +249,24 @@ void LightShaderClass::OutputShaderErrorMessage( ID3D10Blob * pBlob, HWND hWnd, 
 	MessageBox( hWnd, L"Error compile shader", fileName, MB_OK );
 }
 
-bool LightShaderClass::SetShaderParameters( 
-	ID3D11DeviceContext * pDeviceContext, 
-	const XMMATRIX & world, 
-	const XMMATRIX & view, 
-	const XMMATRIX & projection, 
-	ID3D11ShaderResourceView * pTexture, 
-	XMFLOAT4 ambientColor,
-	XMFLOAT4 diffuseColor,
-	XMFLOAT3 lightDirection,
-	XMVECTOR cameraPosition,
-	XMVECTOR specularColor,
-	float specularPower
-)
+bool LightShader::SetShaderParam( ID3D11DeviceContext * pDeviceContext, MatrixBuffer& matrixBuffer, CameraBuffer& cameraBuffer, LightBuffer& lightBuffer, ID3D11ShaderResourceView * pTexture )
 {
 	HRESULT hr = E_FAIL;
 
-	XMMATRIX _world = XMMatrixTranspose( world );
-	XMMATRIX _view = XMMatrixTranspose( view );
-	XMMATRIX _projection = XMMatrixTranspose( projection );
+	matrixBuffer._world = XMMatrixTranspose( matrixBuffer._world );
+	matrixBuffer._view = XMMatrixTranspose( matrixBuffer._view );
+	matrixBuffer._projection = XMMatrixTranspose( matrixBuffer._projection );
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	// MatrixBuffer
-	MatrixBufferType* pMatrixPtr = nullptr;
+	MatrixBuffer* pMatrixPtr = nullptr;
 	hr = pDeviceContext->Map( m_pMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource );
-	if( FAILED( hr ) )
-		return false;
+	HR_CHECK_RETURN( hr, L"SetShaderParam" );
 
-	pMatrixPtr = (MatrixBufferType*)mappedResource.pData;
-
-	pMatrixPtr->world = _world;
-	pMatrixPtr->view = _view;
-	pMatrixPtr->projection = _projection;
+	pMatrixPtr = (MatrixBuffer*)mappedResource.pData;
+	pMatrixPtr->_world = matrixBuffer._world;
+	pMatrixPtr->_view = matrixBuffer._view;
+	pMatrixPtr->_projection = matrixBuffer._projection;
 
 	pDeviceContext->Unmap( m_pMatrixBuffer, 0 );
 
@@ -311,14 +275,13 @@ bool LightShaderClass::SetShaderParameters(
 	pDeviceContext->PSSetShaderResources( 0, 1, &pTexture );
 
 	// CameraBuffer
-	CameraBufferType* pCameraPtr = nullptr;
+	CameraBuffer* pCameraPtr = nullptr;
 	hr = pDeviceContext->Map( m_pCameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource );
 	if( FAILED( hr ) )
 		return false;
 
-	pCameraPtr = (CameraBufferType*)mappedResource.pData;
-
-	pCameraPtr->cameraPosition = cameraPosition;
+	pCameraPtr = (CameraBuffer*)mappedResource.pData;
+	pCameraPtr->_position = cameraBuffer._position;
 
 	pDeviceContext->Unmap( m_pCameraBuffer, 0 );
 
@@ -326,28 +289,27 @@ bool LightShaderClass::SetShaderParameters(
 	pDeviceContext->VSSetConstantBuffers( bufferSlot, 1, &m_pCameraBuffer );
 
 	// LightBuffer
-	LightBufferType* pLightPtr = nullptr;
+	LightBuffer* pLightPtr = nullptr;
 	hr = pDeviceContext->Map( m_pLightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource );
 	if( FAILED( hr ) )
 		return false;
 
-	pLightPtr = (LightBufferType*)mappedResource.pData;
-
-	XMFLOAT4 lightDirAndSpecularPower( lightDirection.x, lightDirection.y, lightDirection.z, specularPower );
-	pLightPtr->ambientColor = XMLoadFloat4( &ambientColor );
-	pLightPtr->diffuseColor = XMLoadFloat4( &diffuseColor );
-	pLightPtr->lightDirection = XMLoadFloat4( &lightDirAndSpecularPower );
-	pLightPtr->specularColor = specularColor;
-
+	pLightPtr = (LightBuffer*)mappedResource.pData;
+	pLightPtr->_ambient = lightBuffer._ambient;
+	pLightPtr->_diffuse = lightBuffer._diffuse;
+	pLightPtr->_specular = lightBuffer._specular;
+	pLightPtr->_specularPower = lightBuffer._specularPower;
+	pLightPtr->_direction = lightBuffer._direction;
+	
 	pDeviceContext->Unmap( m_pLightBuffer, 0 );
 
 	bufferSlot = 0;
 	pDeviceContext->PSSetConstantBuffers( bufferSlot, 1, &m_pLightBuffer );
-
+	
 	return true;
 }
 
-void LightShaderClass::RenderShader( ID3D11DeviceContext * pDeviceContext, int indexCount )
+void LightShader::RenderShader( ID3D11DeviceContext * pDeviceContext, int indexCount )
 {
 	pDeviceContext->IASetInputLayout( m_pInputLayout );
 

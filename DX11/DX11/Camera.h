@@ -1,22 +1,30 @@
 #pragma once
 
-class CameraClass
+class Camera
 	: public Align16
 {
-	DELETE_ASSIGN_COPY( CameraClass );
+	DELETE_ASSIGN_COPY( Camera );
 
 public:
-	CameraClass();
-	~CameraClass();
+	Camera();
+	~Camera();
 
 	void SetPosition( float x, float y, float z );
 	void SetRotation( float x, float y, float z );
 
 	XMFLOAT3 GetPosition() const;
 	XMFLOAT3 GetRotation() const;
+	
+	XMVECTOR GetPositionVector() const;
+	XMVECTOR GetRotationVector() const;
 
-	void Render();
+	void Update();
 	void GetViewMatrix( XMMATRIX& view ) const;
+
+	void MoveForward();
+	void MoveBackward();
+	void MoveLeft();
+	void MoveRight();
 
 private:
 	float m_px;
@@ -28,4 +36,6 @@ private:
 	float m_rz;
 
 	XMMATRIX m_view;
+	XMFLOAT3 m_pos;
+	XMFLOAT3 m_rot;
 };

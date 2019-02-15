@@ -1,73 +1,76 @@
 #include "pch.h"
-#include "ModelClass.h"
+#include "Cube.h"
 
-ModelClass::ModelClass()
+
+Cube::Cube()
 	: m_pVertexBuffer{ nullptr }
 	, m_pIndexBuffer{ nullptr }
 	, m_vertexCount{ 0 }
 	, m_indexCount{ 0 }
 	, m_pTexture{ nullptr }
+	, m_pModel{	nullptr}
 {
 }
 
-ModelClass::~ModelClass()
+Cube::~Cube()
 {
 }
 
-bool ModelClass::Initialize( ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const wchar_t* fileName )
+bool Cube::Init( ID3D11Device * pDevice, const char * modelFileName, const wchar_t * textureFileName )
 {
-	if( !InitializeBuffers( pDevice ) )
+	if( !LoadModel( modelFileName ) )
 		return false;
 
-	if( !LoadTexture( pDevice, pDeviceContext, fileName ) )
+	if( !InitBuffer( pDevice ) )
+		return false;
+
+	if( !LoadTexture( pDevice, textureFileName ) )
 		return false;
 
 	return true;
 }
 
-void ModelClass::Shutdown()
+void Cube::Terminate()
 {
-	ReleaseTexture();
-
-	ShutdownBuffers();
+	TerminateTexture();
+	TerminateBuffer();
+	TerminateModel();
 }
 
-void ModelClass::Render( ID3D11DeviceContext * pDeviceContext )
+void Cube::Render( ID3D11DeviceContext * pDeviceContext )
 {
-	RenderBuffers( pDeviceContext );
+	RenderBuffer( pDeviceContext );
 }
 
-int ModelClass::GetIndexCount() const
+int Cube::GetIndexCount() const
 {
 	return m_indexCount;
 }
 
-ID3D11ShaderResourceView * ModelClass::GetTexture() const
+ID3D11ShaderResourceView * Cube::GetTexture() const
 {
 	return m_pTexture->GetTexture();
 }
 
-bool ModelClass::InitializeBuffers( ID3D11Device * pDevice )
+bool Cube::InitBuffer( ID3D11Device * pDevice )
 {
 	HRESULT hr = E_FAIL;
 
+	VertexType* vertices = new VertexType[ m_vertexCount ];
+	unsigned long* indices = new unsigned long[ m_indexCount ];
+
+#pragma region LOAD_FROM_MODEL_DATA
+	for( int i = 0; i < m_vertexCount; ++i )
+	{
+		vertices[ i ]._pos = XMFLOAT3( m_pModel[ i ].x, m_pModel[ i ].y, m_pModel[ i ].z );
+		vertices[ i ]._tex = XMFLOAT2( m_pModel[ i ].tu, m_pModel[ i ].tv );
+		vertices[ i ]._normal = XMFLOAT3( m_pModel[ i ].nx, m_pModel[ i ].ny, m_pModel[ i ].nz );
+
+		indices[ i ] = i;
+	}
+#pragma endregion
+
 #pragma region VERTEX_BUFFER
-	m_vertexCount = 3;
-	VertexType* vertices = nullptr;
-	vertices = new VertexType[ m_vertexCount ];
-	vertices[ 0 ].position = XMFLOAT3( -1.0f, -1.0f, 0.0f );  // Bottom left.
-	vertices[ 0 ].texture = XMFLOAT2( 0.0f, 1.0f );
-	vertices[ 0 ].normal = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-
-	vertices[ 1 ].position = XMFLOAT3( 0.0f, 1.0f, 0.0f );  // Top middle.
-	vertices[ 1 ].texture = XMFLOAT2( 0.5f, 0.0f );
-	vertices[ 1 ].normal = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-
-	vertices[ 2 ].position = XMFLOAT3( 1.0f, -1.0f, 0.0f );  // Bottom right.
-	vertices[ 2 ].texture = XMFLOAT2( 1.0f, 1.0f );
-	vertices[ 2 ].normal = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-
-
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory( &vertexBufferDesc, sizeof( vertexBufferDesc ) );
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -89,13 +92,6 @@ bool ModelClass::InitializeBuffers( ID3D11Device * pDevice )
 #pragma endregion
 
 #pragma region INDEX_BUFFER
-	unsigned long* indices = nullptr;
-	m_indexCount = 3;
-	indices = new unsigned long[ m_indexCount ];
-	indices[ 0 ] = 0;  // Bottom left.
-	indices[ 1 ] = 1;  // Top middle.
-	indices[ 2 ] = 2;  // Bottom right.
-
 	D3D11_BUFFER_DESC indexBufferDesc;
 	ZeroMemory( &indexBufferDesc, sizeof( indexBufferDesc ) );
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -122,13 +118,13 @@ bool ModelClass::InitializeBuffers( ID3D11Device * pDevice )
 	return true;
 }
 
-void ModelClass::ShutdownBuffers()
+void Cube::TerminateBuffer()
 {
 	SAFE_RELEASE( m_pIndexBuffer );
 	SAFE_RELEASE( m_pVertexBuffer );
 }
 
-void ModelClass::RenderBuffers( ID3D11DeviceContext * pDeviceContext )
+void Cube::RenderBuffer( ID3D11DeviceContext * pDeviceContext )
 {
 	unsigned int stride = sizeof( VertexType );
 	unsigned int offset = 0;
@@ -138,17 +134,55 @@ void ModelClass::RenderBuffers( ID3D11DeviceContext * pDeviceContext )
 	pDeviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 }
 
-bool ModelClass::LoadTexture( ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const wchar_t * fileName )
+bool Cube::LoadTexture( ID3D11Device * pDevice, const wchar_t * textureFileName )
 {
-	m_pTexture = new TextureClass();
-	if( !m_pTexture->Initialize( pDevice, pDeviceContext, fileName ) )
+	m_pTexture = new Texture();
+
+	if( !m_pTexture->Init( pDevice, textureFileName ) )
 		return false;
 
 	return true;
 }
 
-void ModelClass::ReleaseTexture()
+void Cube::TerminateTexture()
 {
-	SAFE_SHUTDOWN( m_pTexture );
+	SAFE_TERMINATE( m_pTexture );
 }
 
+bool Cube::LoadModel( const char * modelFileName )
+{
+	std::ifstream file( modelFileName );
+	if( !file.is_open() )
+		return false;
+
+	char input;
+	do
+	{
+		file.get( input );
+	} while( input != ':' );
+
+	file >> m_vertexCount;
+	m_indexCount = m_vertexCount;
+
+	m_pModel = new ModelType[ m_vertexCount ];
+	do
+	{
+		file.get( input );
+	} while( input != ':' );
+	file.get( input );
+
+	for( int i = 0; i < m_vertexCount; ++i )
+	{
+		file >> m_pModel[ i ].x >> m_pModel[ i ].y >> m_pModel[ i ].z;
+		file >> m_pModel[ i ].tu >> m_pModel[ i ].tv;
+		file >> m_pModel[ i ].nx >> m_pModel[ i ].ny >> m_pModel[ i ].nz;
+	}
+	file.close();
+
+	return true;
+}
+
+void Cube::TerminateModel()
+{
+	SAFE_DELETE( m_pModel );
+}

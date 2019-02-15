@@ -1,15 +1,15 @@
 #pragma once
 
-class InputClass
+class Keyboard
 {
 	enum { KEY_MAX = 256, };
 
-	DELETE_ASSIGN_COPY( InputClass )
+	DELETE_ASSIGN_COPY( Keyboard )
 public:
-	InputClass();
-	~InputClass();
+	Keyboard();
+	~Keyboard();
 
-	void Initialize();
+	void Init();
 
 	void KeyDown( unsigned int key );
 	void KeyUp( unsigned int key );

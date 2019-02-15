@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "D3DClass.h"
+#include "D3DContext.h"
 
-D3DClass::D3DClass()
+D3DContext::D3DContext()
 	: m_pSwapChain{ nullptr }
 	, m_pDevice{ nullptr }
 	, m_pDeviceContext{ nullptr }
@@ -16,11 +16,11 @@ D3DClass::D3DClass()
 	m_videoName[ 0 ] = '\0';
 }
 
-D3DClass::~D3DClass()
+D3DContext::~D3DContext()
 {
 }
 
-bool D3DClass::Initialize( int width, int height, bool vsync, HWND hWnd, bool fullscreen, float screenDepth, float screenNear )
+bool D3DContext::Init( int width, int height, bool vsync, HWND hWnd, bool fullscreen, float screenDepth, float screenNear )
 {
 	m_vsync = vsync;
 
@@ -140,7 +140,7 @@ bool D3DClass::Initialize( int width, int height, bool vsync, HWND hWnd, bool fu
 	hr = m_pDevice->CreateTexture2D( &depthStencilBufferDesc, nullptr, &m_pDepthStencilBuffer );
 	HR_ERROR_RETURN( hr, L"ID3D11Device CreateTexture2D" );
 #pragma endregion
-	
+
 #pragma region DEPTH_STENCIL_STATE
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory( &depthStencilDesc, sizeof( depthStencilDesc ) );
@@ -225,7 +225,7 @@ bool D3DClass::Initialize( int width, int height, bool vsync, HWND hWnd, bool fu
 	return true;
 }
 
-void D3DClass::Shutdown()
+void D3DContext::Terminate()
 {
 	if( m_pSwapChain )
 		m_pSwapChain->SetFullscreenState( false, nullptr );
@@ -240,16 +240,15 @@ void D3DClass::Shutdown()
 	SAFE_RELEASE( m_pSwapChain );
 }
 
-void D3DClass::BeginScene( float red, float green, float blue, float alpha )
+void D3DContext::BeginScene( float red, float green, float blue, float alpha )
 {
 	float color[ 4 ] = { red, green, blue, alpha };
 
 	m_pDeviceContext->ClearRenderTargetView( m_pRenderTargetView, color );
-
 	m_pDeviceContext->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0 );
 }
 
-void D3DClass::EndScene()
+void D3DContext::EndScene()
 {
 	if( m_vsync )
 	{
@@ -261,32 +260,32 @@ void D3DClass::EndScene()
 	}
 }
 
-ID3D11Device * D3DClass::GetDevice() const
+ID3D11Device * D3DContext::GetDevice() const
 {
 	return m_pDevice;
 }
 
-ID3D11DeviceContext * D3DClass::GetDeviceContext() const
+ID3D11DeviceContext * D3DContext::GetDeviceContext() const
 {
 	return m_pDeviceContext;
 }
 
-void D3DClass::GetProjectionMatrix( XMMATRIX & projection ) const
+void D3DContext::GetProjectionMatrix( XMMATRIX & projection ) const
 {
 	projection = m_projection;
 }
 
-void D3DClass::GetWorldMatrix( XMMATRIX & world ) const
+void D3DContext::GetWorldMatrix( XMMATRIX & world ) const
 {
 	world = m_world;
 }
 
-void D3DClass::GetOrthoMatrix( XMMATRIX & ortho ) const
+void D3DContext::GetOrthoMatrix( XMMATRIX & ortho ) const
 {
 	ortho = m_ortho;
 }
 
-void D3DClass::GetVideoCardInfo( char * videoCard, int & memory ) const
+void D3DContext::GetVideoCardInfo( char * videoCard, int & memory ) const
 {
 	strcpy_s( videoCard, 128, m_videoName );
 	memory = m_videoMemory;
