@@ -25,9 +25,19 @@ void LightShaderClass::Shutdown()
 	ShutdownShader();
 }
 
-bool LightShaderClass::Render( ID3D11DeviceContext * pDeviceContext, int indexCount, const XMMATRIX & world, const XMMATRIX & view, const XMMATRIX & projection, ID3D11ShaderResourceView* pTexture, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection )
+bool LightShaderClass::Render( 
+	ID3D11DeviceContext * pDeviceContext, 
+	int indexCount, 
+	const XMMATRIX & world, 
+	const XMMATRIX & view, 
+	const XMMATRIX & projection, 
+	ID3D11ShaderResourceView* pTexture, 
+	XMFLOAT4 ambientColor,
+	XMFLOAT4 diffuseColor, 
+	XMFLOAT3 lightDirection 
+)
 {
-	if( !SetShaderParameters( pDeviceContext, world, view, projection, pTexture, diffuseColor, lightDirection ) )
+	if( !SetShaderParameters( pDeviceContext, world, view, projection, pTexture, ambientColor, diffuseColor, lightDirection ) )
 		return false;
 
 	RenderShader( pDeviceContext, indexCount );
@@ -229,7 +239,7 @@ void LightShaderClass::OutputShaderErrorMessage( ID3D10Blob * pBlob, HWND hWnd, 
 	MessageBox( hWnd, L"Error compile shader", fileName, MB_OK );
 }
 
-bool LightShaderClass::SetShaderParameters( ID3D11DeviceContext * pDeviceContext, const XMMATRIX & world, const XMMATRIX & view, const XMMATRIX & projection, ID3D11ShaderResourceView * pTexture, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection )
+bool LightShaderClass::SetShaderParameters( ID3D11DeviceContext * pDeviceContext, const XMMATRIX & world, const XMMATRIX & view, const XMMATRIX & projection, ID3D11ShaderResourceView * pTexture, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection )
 {
 	HRESULT hr = E_FAIL;
 
@@ -264,6 +274,7 @@ bool LightShaderClass::SetShaderParameters( ID3D11DeviceContext * pDeviceContext
 
 	pLightPtr = (LightBufferType*)mappedResource.pData;
 
+	pLightPtr->ambientColor = XMLoadFloat4( &ambientColor );
 	pLightPtr->diffuseColor = XMLoadFloat4( &diffuseColor );
 	pLightPtr->lightDirection = XMLoadFloat3( &lightDirection );
 
