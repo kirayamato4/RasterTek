@@ -18,7 +18,7 @@ LightShader::~LightShader()
 
 bool LightShader::Init( ID3D11Device * pDevice, HWND hWnd )
 {
-	return InitShader( pDevice, hWnd, L"LightVertexShader.hlsl", L"LightPixelShader.hlsl" );
+	return InitShader( pDevice, hWnd, L"Shader/LightVertexShader.hlsl", L"Shader/LightPixelShader.hlsl" );
 }
 
 void LightShader::Terminate()

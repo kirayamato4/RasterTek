@@ -56,7 +56,7 @@ bool Cube::InitBuffer( ID3D11Device * pDevice )
 {
 	HRESULT hr = E_FAIL;
 
-	VertexType* vertices = new VertexType[ m_vertexCount ];
+	LightVertexType* vertices = new LightVertexType[ m_vertexCount ];
 	unsigned long* indices = new unsigned long[ m_indexCount ];
 
 #pragma region LOAD_FROM_MODEL_DATA
@@ -74,7 +74,7 @@ bool Cube::InitBuffer( ID3D11Device * pDevice )
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory( &vertexBufferDesc, sizeof( vertexBufferDesc ) );
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof( VertexType ) * m_vertexCount;
+	vertexBufferDesc.ByteWidth = sizeof( LightVertexType ) * m_vertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
@@ -126,7 +126,7 @@ void Cube::TerminateBuffer()
 
 void Cube::RenderBuffer( ID3D11DeviceContext * pDeviceContext )
 {
-	unsigned int stride = sizeof( VertexType );
+	unsigned int stride = sizeof( LightVertexType );
 	unsigned int offset = 0;
 
 	pDeviceContext->IASetVertexBuffers( 0, 1, &m_pVertexBuffer, &stride, &offset );
@@ -164,7 +164,7 @@ bool Cube::LoadModel( const char * modelFileName )
 	file >> m_vertexCount;
 	m_indexCount = m_vertexCount;
 
-	m_pModel = new ModelType[ m_vertexCount ];
+	m_pModel = new LightModelType[ m_vertexCount ];
 	do
 	{
 		file.get( input );

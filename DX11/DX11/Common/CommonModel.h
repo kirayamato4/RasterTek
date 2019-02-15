@@ -1,19 +1,20 @@
 #pragma once
 
-struct VertexType
+
+struct LightVertexType
 {
 	XMFLOAT3 _pos;
 	XMFLOAT2 _tex;
 	XMFLOAT3 _normal;
 
-	VertexType();
+	LightVertexType();
 };
 
-struct ModelType
+struct LightModelType
 {
 	float x, y, z;
 	float tu, tv;
 	float nx, ny, nz;
 
-	ModelType();
+	LightModelType();
 };

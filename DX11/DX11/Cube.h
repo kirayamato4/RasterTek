@@ -35,5 +35,5 @@ private:
 	int m_indexCount;
 
 	Texture* m_pTexture;
-	ModelType* m_pModel;
+	LightModelType* m_pModel;
 };

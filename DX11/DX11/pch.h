@@ -81,5 +81,5 @@ __declspec( align( 16 ) ) struct Align16
 };
 
 
-#include "CommonShader.h"
-#include "CommonModel.h"
+#include "Common/CommonShader.h"
+#include "Common/CommonModel.h"

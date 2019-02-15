@@ -57,16 +57,19 @@
     <ClCompile Include="LightShader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CommonShader.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Cube.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CommonModel.cpp">
+    <ClCompile Include="TextureShader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CommonModel.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CommonShader.cpp">
       <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,24 +101,33 @@
     <ClInclude Include="LightShader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CommonShader.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CommonModel.h">
+    <ClInclude Include="TextureShader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CommonModel.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CommonShader.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="LightVertexShader.hlsl">
+    <FxCompile Include="Shader\LightPixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="LightPixelShader.hlsl">
+    <FxCompile Include="Shader\LightVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\TexturePixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\TextureVertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

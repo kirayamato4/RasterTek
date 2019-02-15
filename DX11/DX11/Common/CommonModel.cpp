@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "CommonModel.h"
 
-VertexType::VertexType()
+LightVertexType::LightVertexType()
 	: _pos(), _tex(), _normal()
 {
 }
 
-ModelType::ModelType()
+LightModelType::LightModelType()
 {
 	x = y = z = 0.0f;
 	tu = tv = 0.0f;

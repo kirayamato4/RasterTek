@@ -48,7 +48,7 @@ bool Renderer::Init( int width, int height, HWND hWnd )
 
 	m_pCube = new Cube;
 	if( nullptr == m_pCube ) return false;
-	if( !m_pCube->Init( GetDevice(), "cube.txt", L"a.dds" ) )
+	if( !m_pCube->Init( GetDevice(), "Resource/cube.txt", L"Resource/a.dds" ) )
 		return false;
 
 	return true;
