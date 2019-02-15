@@ -12,11 +12,17 @@ class LightShaderClass
 		XMMATRIX projection;
 	};
 
+	struct CameraBufferType
+	{
+		XMVECTOR cameraPosition;
+	};
+
 	struct LightBufferType
 	{
 		XMVECTOR ambientColor;
 		XMVECTOR diffuseColor;
-		XMVECTOR lightDirection;
+		XMVECTOR lightDirection;	// x y z : lightDirection, w : specularPower
+		XMVECTOR specularColor;
 	};
 
 public:
@@ -34,7 +40,10 @@ public:
 		ID3D11ShaderResourceView* pTexture, 
 		XMFLOAT4 ambientColor,
 		XMFLOAT4 diffuseColor, 
-		XMFLOAT3 lightDirection 
+		XMFLOAT3 lightDirection,
+		XMVECTOR cameraPosition,
+		XMVECTOR specularColor,
+		float specularPower
 	);
 
 private:
@@ -49,8 +58,11 @@ private:
 		const XMMATRIX& projection, 
 		ID3D11ShaderResourceView* pTexture, 
 		XMFLOAT4 ambientColor,
-		XMFLOAT4 diffuseColor, 
-		XMFLOAT3 lightDirection 
+		XMFLOAT4 diffuseColor,
+		XMFLOAT3 lightDirection,
+		XMVECTOR cameraPosition,
+		XMVECTOR specularColor,
+		float specularPower
 	);
 	void RenderShader( ID3D11DeviceContext* pDeviceContext, int indexCount );
 
@@ -60,5 +72,6 @@ private:
 	ID3D11InputLayout* m_pInputLayout;
 	ID3D11SamplerState* m_pSamplerState;
 	ID3D11Buffer* m_pMatrixBuffer;
+	ID3D11Buffer* m_pCameraBuffer;
 	ID3D11Buffer* m_pLightBuffer;
 };

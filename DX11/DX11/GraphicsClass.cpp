@@ -53,6 +53,8 @@ bool GraphicsClass::Initialize( int width, int height, HWND hWnd )
 	m_pLight->SetAmbientColor( 0.55f, 0.15f, 0.15f, 1.0f );
 	m_pLight->SetDiffuseColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	m_pLight->SetDirection( 0.0f, 0.0f, 1.0f );
+	m_pLight->SetSpecularColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	m_pLight->SetSpecularPower( 32.0f );
 
 	return true;
 }
@@ -105,7 +107,21 @@ bool GraphicsClass::Render( float rotation )
 		return false;*/
 
 	m_pCube->Render( pDeviceContext );
-	if( !m_pLightShader->Render( pDeviceContext, m_pCube->GetIndexCount(), world, view, projection, m_pCube->GetTexture(), m_pLight->GetAmbientColor(), m_pLight->GetDiffuseColor(), m_pLight->GetDirectoin() ) )
+	if( !m_pLightShader->Render( 
+		pDeviceContext, 
+		m_pCube->GetIndexCount(), 
+		world, 
+		view, 
+		projection, 
+		m_pCube->GetTexture(), 
+		m_pLight->GetAmbientColor(), 
+		m_pLight->GetDiffuseColor(),
+		m_pLight->GetDirectoin(),
+		XMLoadFloat3( &m_pCamera->GetPosition() ),
+		XMLoadFloat4( &m_pLight->GetSpecularColor() ),
+		m_pLight->GetSpecularPower()
+		)
+	)
 		return false;
 
 	m_pDirect3D->EndScene();
