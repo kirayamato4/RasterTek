@@ -2,9 +2,11 @@
 
 #include "D3DContext.h"
 #include "Camera.h"
-#include "Cube.h"
+#include "TextureShader.h"
 #include "Light.h"
 #include "LightShader.h"
+#include "Cube.h"
+#include "WImage.h"
 
 namespace RendererValue	// Graphics Class Value
 {
@@ -38,6 +40,9 @@ private:
 	Camera* m_pCamera;
 	Light* m_pLight;
 	LightShader* m_pLightShader;
+
+	TextureShader* m_pTextureShader;
+	WImage*	m_pImage;
 
 	Cube* m_pCube;
 };

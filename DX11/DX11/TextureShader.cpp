@@ -234,7 +234,7 @@ bool TextureShader::SetShaderParam( ID3D11DeviceContext * pDeviceContext, Matrix
 
 	UINT bufferSlot = 0;
 	pDeviceContext->VSSetConstantBuffers( bufferSlot, 1, &m_pMatrixBuffer );
-	pDeviceContext->PSSetShaderResources( 0, 1, &pTexture );
+	pDeviceContext->PSSetShaderResources( bufferSlot, 1, &pTexture );
 
 	return true;
 }

@@ -169,6 +169,33 @@ bool D3DContext::Init( int width, int height, bool vsync, HWND hWnd, bool fullsc
 	m_pDeviceContext->OMSetDepthStencilState( m_pDepthStencilState, 1 );
 #pragma endregion
 
+#pragma region DEPTH_STENCIL_DISABLE_STATE
+	D3D11_DEPTH_STENCIL_DESC depthStencilDisableState;
+	ZeroMemory( &depthStencilDisableState, sizeof( depthStencilDisableState ) );
+	// Depth
+	depthStencilDisableState.DepthEnable = false;
+	depthStencilDisableState.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDisableState.DepthFunc = D3D11_COMPARISON_LESS;
+	// Stencil
+	depthStencilDisableState.StencilEnable = true;
+	depthStencilDisableState.StencilReadMask = 0xFF;
+	depthStencilDisableState.StencilWriteMask = 0xFF;
+	// Stencil operations if pixel front-facing
+	depthStencilDisableState.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDisableState.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDisableState.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDisableState.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	// Stencil operations if pixel back-facing
+	depthStencilDisableState.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDisableState.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDisableState.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDisableState.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	hr = m_pDevice->CreateDepthStencilState( &depthStencilDisableState, &m_pDepthStencilDisableState );
+	HR_ERROR_RETURN( hr, L"ID3D11Device CreateDepthStencilDisableState" );
+
+#pragma endregion
+
 #pragma region DEPTH_STENCIL_VIEW
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory( &depthStencilViewDesc, sizeof( depthStencilViewDesc ) );
@@ -220,8 +247,7 @@ bool D3DContext::Init( int width, int height, bool vsync, HWND hWnd, bool fullsc
 
 	m_projection = XMMatrixPerspectiveFovLH( fieldOfView, screenAspect, screenNear, screenDepth );
 	m_world = XMMatrixIdentity();
-	m_ortho = XMMatrixOrthographicLH( (float)width, (float)height, screenNear, screenDepth );
-
+	m_ortho = XMMatrixOrthographicLH( (float)width, (float)height, 0.1f, 10.0f );
 	return true;
 }
 
@@ -232,6 +258,7 @@ void D3DContext::Terminate()
 
 	SAFE_RELEASE( m_pRasterState );
 	SAFE_RELEASE( m_pDepthStencilView );
+	SAFE_RELEASE( m_pDepthStencilDisableState );
 	SAFE_RELEASE( m_pDepthStencilState );
 	SAFE_RELEASE( m_pDepthStencilBuffer );
 	SAFE_RELEASE( m_pRenderTargetView );
@@ -289,4 +316,14 @@ void D3DContext::GetVideoCardInfo( char * videoCard, int & memory ) const
 {
 	strcpy_s( videoCard, 128, m_videoName );
 	memory = m_videoMemory;
+}
+
+void D3DContext::ZBufferOn()
+{
+	m_pDeviceContext->OMSetDepthStencilState( m_pDepthStencilState, 1 );
+}
+
+void D3DContext::ZBufferOff()
+{
+	m_pDeviceContext->OMSetDepthStencilState( m_pDepthStencilDisableState, 1 );
 }

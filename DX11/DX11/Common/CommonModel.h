@@ -1,5 +1,12 @@
 #pragma once
 
+struct TextureVertexType
+{
+	XMFLOAT3 _pos;
+	XMFLOAT2 _tex;
+
+	TextureVertexType();
+};
 
 struct LightVertexType
 {

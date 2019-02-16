@@ -72,6 +72,9 @@
     <ClCompile Include="Common\CommonShader.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="WImage.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="Common\CommonShader.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="WImage.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

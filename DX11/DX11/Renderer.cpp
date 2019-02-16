@@ -6,6 +6,8 @@ Renderer::Renderer()
 	, m_pCamera{ nullptr }
 	, m_pLight{ nullptr }
 	, m_pLightShader{ nullptr }
+	, m_pTextureShader{ nullptr }
+	, m_pImage{ nullptr }
 	, m_pCube{ nullptr }
 {
 
@@ -46,6 +48,17 @@ bool Renderer::Init( int width, int height, HWND hWnd )
 	}
 	////////////////////////////////////////////////////////////////////////////////////
 
+	m_pTextureShader = new TextureShader;
+	if( nullptr == m_pTextureShader ) return false;
+	if( !m_pTextureShader->Init( GetDevice(), hWnd ) )
+		return false;
+
+	m_pImage = new WImage;
+	if( !m_pImage->Init( GetDevice(), SIZE{ width, height }, L"Resource/c.dds", SIZE{ 256, 256 } ) )
+		return false;
+
+	////////////////////////////////////////////////////////////////////////////////////
+
 	m_pCube = new Cube;
 	if( nullptr == m_pCube ) return false;
 	if( !m_pCube->Init( GetDevice(), "Resource/cube.txt", L"Resource/a.dds" ) )
@@ -57,6 +70,9 @@ bool Renderer::Init( int width, int height, HWND hWnd )
 void Renderer::Terminate()
 {
 	SAFE_TERMINATE( m_pCube );
+
+	SAFE_TERMINATE( m_pImage );
+	SAFE_TERMINATE( m_pTextureShader );
 
 	SAFE_TERMINATE( m_pLightShader );
 	SAFE_DELETE( m_pLight );
@@ -75,7 +91,7 @@ bool Renderer::Update()
 
 
 	m_pCamera->Update();
-	
+
 
 	return Render( rotation );
 }
@@ -103,18 +119,27 @@ bool Renderer::Render( float rotation )
 	m_pCamera->GetViewMatrix( matrixBuffer._view );
 	m_pD3DContext->GetProjectionMatrix( matrixBuffer._projection );
 
-	matrixBuffer._world *= XMMatrixRotationY( rotation );
+	MatrixBuffer orthoBuffer = matrixBuffer;
+	m_pD3DContext->GetOrthoMatrix( orthoBuffer._projection );
 
 	CameraBuffer cameraBuffer;
 	cameraBuffer._position = m_pCamera->GetPositionVector();
 	LightBuffer lightbuffer = m_pLight->GetLightBuffer();
 
-	// Render Start
-	m_pD3DContext->BeginScene( 0.0f, 0.0f, 1.0f, 1.0f );
+
+	matrixBuffer._world *= XMMatrixRotationY( rotation );
 	
+	// Render Start
+	m_pD3DContext->BeginScene( 0.0f, 0.0f, 0.75f, 1.0f );
+	
+	m_pCube->Render( GetDeviceContext() );
 	m_pLightShader->Render( GetDeviceContext(), m_pCube->GetIndexCount(), matrixBuffer, cameraBuffer, lightbuffer, m_pCube->GetTexture() );
 
-	m_pCube->Render( GetDeviceContext() );
+	m_pD3DContext->ZBufferOff();
+	m_pImage->Render( GetDeviceContext(), { 100, 100 } );
+	m_pTextureShader->Render( GetDeviceContext(), m_pImage->GetIndexCount(), orthoBuffer, m_pImage->GetTexture() );
+	
+	m_pD3DContext->ZBufferOn();
 
 	m_pD3DContext->EndScene();
 	// Render End
