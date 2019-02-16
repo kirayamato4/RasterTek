@@ -7,6 +7,7 @@
 #include "LightShader.h"
 #include "Cube.h"
 #include "WImage.h"
+#include "WText.h"
 
 namespace RendererValue	// Graphics Class Value
 {
@@ -43,6 +44,7 @@ private:
 
 	TextureShader* m_pTextureShader;
 	WImage*	m_pImage;
-
+	WText* m_pText;
+	
 	Cube* m_pCube;
 };

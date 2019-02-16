@@ -26,6 +26,9 @@ public:
 	void ZBufferOn();
 	void ZBufferOff();
 
+	void AlphaBlendOn();
+	void AlphaBlendOff();
+
 private:
 	IDXGISwapChain*				m_pSwapChain;
 	ID3D11Device*				m_pDevice;
@@ -36,6 +39,8 @@ private:
 	ID3D11DepthStencilState*	m_pDepthStencilDisableState;
 	ID3D11DepthStencilView*		m_pDepthStencilView;
 	ID3D11RasterizerState*		m_pRasterState;
+	ID3D11BlendState*			m_pAlphaEnableState;
+	ID3D11BlendState*			m_pAlphaDisableState;
 
 	XMMATRIX m_projection;
 	XMMATRIX m_world;

@@ -28,3 +28,8 @@ struct LightBuffer
 };
 
 using LightParam = LightBuffer;
+
+struct FontColorBuffer
+{
+	XMFLOAT4 _fontColor;
+};

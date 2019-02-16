@@ -53,9 +53,13 @@
 #include "DDSTextureLoader.h"
 using namespace DirectX;
 
+// STL header
+#include <vector>
+
 // C++ header
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 static HWND g_hWnd;
 static wchar_t g_BoxStr[ 512 ];

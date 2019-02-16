@@ -145,6 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FontShader.cpp" />
+    <ClCompile Include="WFont.cpp" />
     <ClCompile Include="WImage.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Common\CommonModel.cpp">
@@ -170,8 +172,11 @@
     <ClCompile Include="WolfApp.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="WText.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FontShader.h" />
+    <ClInclude Include="WFont.h" />
     <ClInclude Include="WImage.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Common\CommonModel.h" />
@@ -187,8 +192,17 @@
     <ClInclude Include="TextureShader.h" />
     <ClInclude Include="WolfApp.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="WText.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\FontPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PSMain</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Shader\LightPixelShader.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PSMain</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>

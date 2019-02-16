@@ -8,6 +8,7 @@ Renderer::Renderer()
 	, m_pLightShader{ nullptr }
 	, m_pTextureShader{ nullptr }
 	, m_pImage{ nullptr }
+	, m_pText{ nullptr }
 	, m_pCube{ nullptr }
 {
 
@@ -30,6 +31,10 @@ bool Renderer::Init( int width, int height, HWND hWnd )
 	m_pCamera = new Camera;
 	if( nullptr == m_pCamera ) return false;
 	m_pCamera->SetPosition( 0.0f, 0.0f, -5.0f );
+	m_pCamera->Update();
+
+	XMMATRIX view;
+	m_pCamera->GetViewMatrix( view );
 
 	m_pLight = new Light;
 	if( nullptr == m_pLight ) return false;
@@ -58,6 +63,11 @@ bool Renderer::Init( int width, int height, HWND hWnd )
 		return false;
 
 	////////////////////////////////////////////////////////////////////////////////////
+	m_pText = new WText;
+	if( !m_pText->Init( GetDevice(), GetDeviceContext(), hWnd, width, height, view ) )
+		return false;
+
+	////////////////////////////////////////////////////////////////////////////////////
 
 	m_pCube = new Cube;
 	if( nullptr == m_pCube ) return false;
@@ -71,6 +81,7 @@ void Renderer::Terminate()
 {
 	SAFE_TERMINATE( m_pCube );
 
+	SAFE_TERMINATE( m_pText );
 	SAFE_TERMINATE( m_pImage );
 	SAFE_TERMINATE( m_pTextureShader );
 
@@ -139,6 +150,12 @@ bool Renderer::Render( float rotation )
 	m_pImage->Render( GetDeviceContext(), { 100, 100 } );
 	m_pTextureShader->Render( GetDeviceContext(), m_pImage->GetIndexCount(), orthoBuffer, m_pImage->GetTexture() );
 	
+
+	m_pD3DContext->AlphaBlendOn();
+	if( !m_pText->Render( GetDeviceContext(), orthoBuffer._world, orthoBuffer._projection ) )
+		return false;
+	m_pD3DContext->AlphaBlendOff();
+
 	m_pD3DContext->ZBufferOn();
 
 	m_pD3DContext->EndScene();

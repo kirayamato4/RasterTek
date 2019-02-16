@@ -10,6 +10,8 @@ D3DContext::D3DContext()
 	, m_pDepthStencilState{ nullptr }
 	, m_pDepthStencilView{ nullptr }
 	, m_pRasterState{ nullptr }
+	, m_pAlphaEnableState{ nullptr }
+	, m_pAlphaDisableState{ nullptr }
 {
 	m_vsync = false;
 	m_videoMemory = 0;
@@ -193,7 +195,6 @@ bool D3DContext::Init( int width, int height, bool vsync, HWND hWnd, bool fullsc
 
 	hr = m_pDevice->CreateDepthStencilState( &depthStencilDisableState, &m_pDepthStencilDisableState );
 	HR_ERROR_RETURN( hr, L"ID3D11Device CreateDepthStencilDisableState" );
-
 #pragma endregion
 
 #pragma region DEPTH_STENCIL_VIEW
@@ -207,6 +208,26 @@ bool D3DContext::Init( int width, int height, bool vsync, HWND hWnd, bool fullsc
 	HR_ERROR_RETURN( hr, L"ID3D11Device CreateDepthStencilView" );
 
 	m_pDeviceContext->OMSetRenderTargets( 1, &m_pRenderTargetView, m_pDepthStencilView );
+#pragma endregion
+
+#pragma region BLEND_STATE
+	D3D11_BLEND_DESC blendState;
+	ZeroMemory( &blendState, sizeof( blendState ) );
+	blendState.RenderTarget[ 0 ].BlendEnable = TRUE;
+	blendState.RenderTarget[ 0 ].SrcBlend = D3D11_BLEND_ONE;
+	blendState.RenderTarget[ 0 ].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendState.RenderTarget[ 0 ].BlendOp = D3D11_BLEND_OP_ADD;
+	blendState.RenderTarget[ 0 ].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendState.RenderTarget[ 0 ].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendState.RenderTarget[ 0 ].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendState.RenderTarget[ 0 ].RenderTargetWriteMask = 0x0f;
+
+	hr = m_pDevice->CreateBlendState( &blendState, &m_pAlphaEnableState );
+	HR_CHECK_RETURN( hr, L"ID3D11Device CreateBlendState" );
+
+	blendState.RenderTarget[ 0 ].BlendEnable = FALSE;
+	hr = m_pDevice->CreateBlendState( &blendState, &m_pAlphaDisableState );
+	HR_CHECK_RETURN( hr, L"ID3D11Device CreateBlendState" );
 #pragma endregion
 
 #pragma region RASTERIZER
@@ -257,6 +278,8 @@ void D3DContext::Terminate()
 		m_pSwapChain->SetFullscreenState( false, nullptr );
 
 	SAFE_RELEASE( m_pRasterState );
+	SAFE_RELEASE( m_pAlphaDisableState );
+	SAFE_RELEASE( m_pAlphaEnableState );
 	SAFE_RELEASE( m_pDepthStencilView );
 	SAFE_RELEASE( m_pDepthStencilDisableState );
 	SAFE_RELEASE( m_pDepthStencilState );
@@ -326,4 +349,17 @@ void D3DContext::ZBufferOn()
 void D3DContext::ZBufferOff()
 {
 	m_pDeviceContext->OMSetDepthStencilState( m_pDepthStencilDisableState, 1 );
+}
+
+void D3DContext::AlphaBlendOn()
+{
+	float blend[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	m_pDeviceContext->OMSetBlendState( m_pAlphaEnableState, blend, 0xffffffff );
+
+}
+
+void D3DContext::AlphaBlendOff()
+{
+	float blend[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	m_pDeviceContext->OMSetBlendState( m_pAlphaDisableState, blend, 0xffffffff );
 }
