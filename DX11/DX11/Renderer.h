@@ -26,7 +26,7 @@ public:
 
 	bool Init( int width, int height, HWND hWnd );
 	void Terminate();
-	bool Update();
+	bool Update( const POINT& mouse );
 
 	void CameraUpdate( unsigned int key );
 

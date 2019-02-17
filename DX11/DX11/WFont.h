@@ -21,7 +21,7 @@ public:
 	void Terminate();
 
 	ID3D11ShaderResourceView* GetTexture() const;
-	void BuildVertexArray( void* vertices, char* sentense, float drawX, float drwaY );
+	void BuildVertexArray( void* vertices, const char* sentense, float drawX, float drwaY );
 
 private:
 	bool LoadFontData( const char* fontData );

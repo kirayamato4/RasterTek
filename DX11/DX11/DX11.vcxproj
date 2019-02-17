@@ -94,7 +94,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Manifest>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -159,7 +159,7 @@
     <ClCompile Include="D3DContext.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="InputDevice.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightShader.cpp" />
     <ClCompile Include="pch.cpp">
@@ -185,7 +185,7 @@
     <ClInclude Include="D3DContext.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="InputDevice.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightShader.h" />
     <ClInclude Include="pch.h" />

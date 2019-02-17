@@ -33,16 +33,16 @@ ID3D11ShaderResourceView * WFont::GetTexture() const
 	return m_pTexture->GetTexture();
 }
 
-void WFont::BuildVertexArray( void * vertices, char * sentense, float drawX, float drawY )
+void WFont::BuildVertexArray( void * vertices, const char * sentense, float drawX, float drawY )
 {
 	TextureVertexType* pVertexPtr = (TextureVertexType*)vertices;
 	size_t sentenceLnegh = strlen( sentense );
 
-	constexpr float font_width = 16.0f;
-	constexpr float font_height = 15.0f;
+	constexpr float font_width = 12.0f;
+	constexpr float font_height = 12.0f;
 
 
-	drawY += 450;
+	// drawY += 450;
 	size_t index = 0;
 	for( size_t i = 0; i < sentenceLnegh; ++i )
 	{

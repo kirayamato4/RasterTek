@@ -34,7 +34,7 @@ bool WText::Init( ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, 
 	if( !InitSentence( &m_sentence1, 16, pDevice ) )
 		return false;
 
-	if( !UpdateSentence( m_sentence1, "WindWolf", 100, 100, 1.0f, 1.0f, 1.0f, pDeviceContext ) )
+	if( !InitSentence( &m_sentence2, 16, pDevice ) )
 		return false;
 
 	return true;
@@ -42,6 +42,7 @@ bool WText::Init( ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, 
 
 void WText::Terminate()
 {
+	TerminateSentence( &m_sentence2 );
 	TerminateSentence( &m_sentence1 );
 
 	SAFE_TERMINATE( m_pFontShader );
@@ -51,6 +52,28 @@ void WText::Terminate()
 bool WText::Render( ID3D11DeviceContext * pDeviceContext, const XMMATRIX & world, const XMMATRIX & ortho )
 {
 	if( !RenderSentence( pDeviceContext, m_sentence1, world, ortho ) )
+		return false;
+
+	if( !RenderSentence( pDeviceContext, m_sentence2, world, ortho ) )
+		return false;
+
+	return true;
+}
+
+bool WText::SetMousePosition( const POINT & mouse, ID3D11DeviceContext * pDeviceContext )
+{
+	LONG x = mouse.x;
+	std::string posX = "Mouse X: ";
+	posX += std::to_string( x );
+
+	if( !UpdateSentence( m_sentence1, posX.c_str(), 0, 0, 1.0f, 1.0f, 1.0f, pDeviceContext ) )
+		return false;
+
+	LONG y = mouse.y;
+	std::string posY = "Mouse Y: ";
+	posY += std::to_string( y );
+
+	if( !UpdateSentence( m_sentence2, posY.c_str(), 0, 25, 1.0f, 1.0f, 1.0f, pDeviceContext ) )
 		return false;
 
 	return true;
@@ -124,7 +147,7 @@ bool WText::InitSentence( SentenceType ** ppSentence, size_t maxLength, ID3D11De
 	return true;
 }
 
-bool WText::UpdateSentence( SentenceType * pSentence, char * text, int x, int y, float red, float green, float blue, ID3D11DeviceContext * pDeviceContext )
+bool WText::UpdateSentence( SentenceType * pSentence, const char * text, int x, int y, float red, float green, float blue, ID3D11DeviceContext * pDeviceContext )
 {
 	pSentence->_red = red;
 	pSentence->_green = green;
@@ -139,7 +162,7 @@ bool WText::UpdateSentence( SentenceType * pSentence, char * text, int x, int y,
 	memset( vertices, 0, sizeof( TextureVertexType ) * COUNT );
 
 	float drawX = ( -m_screenWidth / 2.0f ) + x;
-	float drawY = ( -m_screenHeight / 2.0f ) + y;
+	float drawY = ( m_screenHeight / 2.0f ) - y;
 
 	m_pFont->BuildVertexArray( (void*)vertices, text, drawX, drawY );
 

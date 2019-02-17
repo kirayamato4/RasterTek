@@ -15,9 +15,10 @@ public:
 	void Terminate();
 	bool Render( ID3D11DeviceContext* pDeviceContext, const XMMATRIX& world, const XMMATRIX& ortho );
 
+	bool SetMousePosition( const POINT& mouse, ID3D11DeviceContext* pDeviceContext );
 private:
 	bool InitSentence( SentenceType** ppSentence, size_t maxLength, ID3D11Device* pDevice );
-	bool UpdateSentence( SentenceType* pSentence, char* text, int x, int y, float red, float green, float blue, ID3D11DeviceContext* pDeviceContext );
+	bool UpdateSentence( SentenceType* pSentence, const char* text, int x, int y, float red, float green, float blue, ID3D11DeviceContext* pDeviceContext );
 	void TerminateSentence( SentenceType** ppSentence );
 	bool RenderSentence( ID3D11DeviceContext* pDeviceContext, SentenceType* pSentence, const XMMATRIX& world, const XMMATRIX& ortho );
 

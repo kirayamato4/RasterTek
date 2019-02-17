@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Keyboard.h"
+#include "InputDevice.h"
 #include "Renderer.h"
 
 class WolfApp
@@ -29,7 +29,7 @@ private:
 	HINSTANCE m_hInstance;
 	HWND m_hWnd;
 
-	Keyboard* m_pKeyboard;
+	InputDevice* m_pInputDevice;
 	Renderer* m_pRenderer;
 };
 

@@ -91,18 +91,17 @@ void Renderer::Terminate()
 	SAFE_TERMINATE( m_pD3DContext );
 }
 
-bool Renderer::Update()
+bool Renderer::Update( const POINT& mouse )
 {
-	static float rotation = 0.0f;
-	static float red = 0.0f;
-
-	rotation += 3.141592f * 0.005f;
-	if( rotation > 90.0f )
-		rotation -= 180.0f;
+	m_pText->SetMousePosition( mouse, GetDeviceContext() );
 
 
 	m_pCamera->Update();
 
+	static float rotation = 0.0f;
+	rotation += 3.141592f * 0.005f;
+	if( rotation > 90.0f )
+		rotation -= 180.0f;
 
 	return Render( rotation );
 }
@@ -111,10 +110,10 @@ void Renderer::CameraUpdate( unsigned int key )
 {
 	switch( key )
 	{
-		case VK_UP:		m_pCamera->MoveForward();	break;
-		case VK_DOWN:	m_pCamera->MoveBackward();	break;
-		case VK_LEFT:	m_pCamera->MoveLeft();		break;
-		case VK_RIGHT:	m_pCamera->MoveRight();		break;
+		case DIK_UP:	m_pCamera->MoveForward();	break;
+		case DIK_DOWN:	m_pCamera->MoveBackward();	break;
+		case DIK_LEFT:	m_pCamera->MoveLeft();		break;
+		case DIK_RIGHT:	m_pCamera->MoveRight();		break;
 	}
 
 	m_pCamera->Update();
@@ -143,19 +142,24 @@ bool Renderer::Render( float rotation )
 	// Render Start
 	m_pD3DContext->BeginScene( 0.0f, 0.0f, 0.0f, 1.0f );
 	
+	// Render 3D
 	m_pCube->Render( GetDeviceContext() );
 	m_pLightShader->Render( GetDeviceContext(), m_pCube->GetIndexCount(), matrixBuffer, cameraBuffer, lightbuffer, m_pCube->GetTexture() );
 
+	// ZBuffer Off
 	m_pD3DContext->ZBufferOff();
-	m_pImage->Render( GetDeviceContext(), { 100, 100 } );
-	m_pTextureShader->Render( GetDeviceContext(), m_pImage->GetIndexCount(), orthoBuffer, m_pImage->GetTexture() );
-	
 
+	// AlphaBlend On
 	m_pD3DContext->AlphaBlendOn();
+
+	// Draw Text
 	if( !m_pText->Render( GetDeviceContext(), orthoBuffer._world, orthoBuffer._projection ) )
 		return false;
+
+	// Alpha Blend Off
 	m_pD3DContext->AlphaBlendOff();
 
+	// ZBuffer On
 	m_pD3DContext->ZBufferOn();
 
 	m_pD3DContext->EndScene();

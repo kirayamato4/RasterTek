@@ -2,7 +2,7 @@
 #include "WolfApp.h"
 
 WolfApp::WolfApp()
-	: m_pKeyboard{ nullptr }
+	: m_pInputDevice{ nullptr }
 	, m_pRenderer{ nullptr }
 {
 	m_AppName = L"WindWolf";
@@ -27,13 +27,14 @@ bool WolfApp::Init()
 	int width = 0, height = 0;
 	InitWindow( width, height );
 
-	m_pKeyboard = new Keyboard();
-	if( nullptr == m_pKeyboard )
+	m_pInputDevice = new InputDevice();
+	if( nullptr == m_pInputDevice )
 	{
 		MessageBox( m_hWnd, L"InputClass Creating Fail", L"WolfApp::Initialize", MB_OK );
 		return false;
 	}
-	m_pKeyboard->Init();
+	if( !m_pInputDevice->Init( m_hInstance, m_hWnd, width, height ) )
+		return false;
 
 	m_pRenderer = new Renderer();
 	if( nullptr == m_pRenderer )
@@ -53,7 +54,8 @@ bool WolfApp::Init()
 void WolfApp::Release()
 {
 	SAFE_TERMINATE( m_pRenderer );
-	SAFE_DELETE( m_pKeyboard );
+	SAFE_TERMINATE( m_pInputDevice );
+	SAFE_DELETE( m_pInputDevice );
 
 	TerminateWindow();
 }
@@ -81,6 +83,9 @@ void WolfApp::Run()
 			if( !result )
 				done = true;
 		}
+
+		if( m_pInputDevice->IsEscapePressed() )
+			done = true;
 	}
 }
 
@@ -90,13 +95,13 @@ LRESULT WolfApp::MessageHandler( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 	{
 		case WM_KEYDOWN:
 		{
-			m_pKeyboard->KeyDown( (unsigned int)wParam );
+			m_pInputDevice->KeyDown( (unsigned int)wParam );
 			return 0;
 		}
 
 		case WM_KEYUP:
 		{
-			m_pKeyboard->KeyUp( (unsigned int)wParam );
+			m_pInputDevice->KeyUp( (unsigned int)wParam );
 			return 0;
 		}
 
@@ -109,22 +114,27 @@ LRESULT WolfApp::MessageHandler( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 bool WolfApp::Update()
 {
-	if( m_pKeyboard->IsKeyDown( VK_ESCAPE ) )
+	POINT mouse{ 0, 0 };
+
+	if( !m_pInputDevice->Update() )
 		return false;
 
-	if( m_pKeyboard->IsKeyDown( VK_UP ) )
-		m_pRenderer->CameraUpdate( VK_UP );
+	m_pInputDevice->GetMousePosition( mouse );
+
+
+	if( m_pInputDevice->IsKeyDown( DIK_UP ) )
+		m_pRenderer->CameraUpdate( DIK_UP );
 	
-	if( m_pKeyboard->IsKeyDown( VK_DOWN ) )
-		m_pRenderer->CameraUpdate( VK_DOWN );
+	if( m_pInputDevice->IsKeyDown( DIK_DOWN ) )
+		m_pRenderer->CameraUpdate( DIK_DOWN );
 
-	if( m_pKeyboard->IsKeyDown( VK_LEFT ) )
-		m_pRenderer->CameraUpdate( VK_LEFT );
+	if( m_pInputDevice->IsKeyDown( DIK_LEFT ) )
+		m_pRenderer->CameraUpdate( DIK_LEFT );
 
-	if( m_pKeyboard->IsKeyDown( VK_RIGHT ) )
-		m_pRenderer->CameraUpdate( VK_RIGHT );
+	if( m_pInputDevice->IsKeyDown( DIK_RIGHT ) )
+		m_pRenderer->CameraUpdate( DIK_RIGHT );
 
-	if( !m_pRenderer->Update() )
+	if( !m_pRenderer->Update( mouse ) )
 		return false;
 
 	return true;
