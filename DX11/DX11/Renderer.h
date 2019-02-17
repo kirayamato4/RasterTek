@@ -12,7 +12,7 @@
 namespace RendererValue	// Graphics Class Value
 {
 	const bool FULL_SCREEN = false;
-	const bool VSYNC_ENABLED = true;
+	const bool VSYNC_ENABLED = false;
 	const float SCREEN_DEPTH = 1000.0f;
 	const float SCREEN_NEAR = 0.1f;
 }
@@ -26,7 +26,7 @@ public:
 
 	bool Init( int width, int height, HWND hWnd );
 	void Terminate();
-	bool Update( const POINT& mouse );
+	bool Update( const POINT& mouse, const int& FPS, const int& CPU, const float& Time );
 
 	void CameraUpdate( unsigned int key );
 

@@ -23,6 +23,8 @@ public:
 
 	void GetVideoCardInfo( char* videoCard, int& memory ) const;
 
+	bool GetVSync() const;
+
 	void ZBufferOn();
 	void ZBufferOff();
 

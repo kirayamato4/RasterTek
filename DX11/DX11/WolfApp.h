@@ -3,6 +3,10 @@
 #include "InputDevice.h"
 #include "Renderer.h"
 
+#include "FPS.h"
+#include "CPU.h"
+#include "Timer.h"
+
 class WolfApp
 	: public Align16
 {
@@ -31,6 +35,10 @@ private:
 
 	InputDevice* m_pInputDevice;
 	Renderer* m_pRenderer;
+
+	FPS*	m_pFPS;
+	CPU*	m_pCPU;
+	WTimer* m_pTimer;
 };
 
 static WolfApp* gWolfApp = nullptr;

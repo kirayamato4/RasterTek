@@ -341,6 +341,11 @@ void D3DContext::GetVideoCardInfo( char * videoCard, int & memory ) const
 	memory = m_videoMemory;
 }
 
+bool D3DContext::GetVSync() const
+{
+	return m_vsync;
+}
+
 void D3DContext::ZBufferOn()
 {
 	m_pDeviceContext->OMSetDepthStencilState( m_pDepthStencilState, 1 );

@@ -91,17 +91,28 @@ void Renderer::Terminate()
 	SAFE_TERMINATE( m_pD3DContext );
 }
 
-bool Renderer::Update( const POINT& mouse )
+bool Renderer::Update( const POINT& mouse, const int& FPS, const int& CPU, const float& Time )
 {
 	m_pText->SetMousePosition( mouse, GetDeviceContext() );
-
+	m_pText->SetFPS( FPS, GetDeviceContext() );
+	m_pText->SetCPU( CPU, GetDeviceContext() );
+	
 
 	m_pCamera->Update();
 
 	static float rotation = 0.0f;
-	rotation += 3.141592f * 0.005f;
-	if( rotation > 90.0f )
-		rotation -= 180.0f;
+
+	if( m_pD3DContext->GetVSync() )
+	{
+		rotation += 3.141592f * 0.005f;
+	}
+	else
+	{
+		rotation += 0.0001;
+	}
+	
+	if( rotation > 360.0f )
+		rotation -= 360.0f;
 
 	return Render( rotation );
 }

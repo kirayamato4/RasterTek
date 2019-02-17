@@ -16,6 +16,8 @@ public:
 	bool Render( ID3D11DeviceContext* pDeviceContext, const XMMATRIX& world, const XMMATRIX& ortho );
 
 	bool SetMousePosition( const POINT& mouse, ID3D11DeviceContext* pDeviceContext );
+	bool SetFPS( const int& FPS, ID3D11DeviceContext* pDeviceContext );
+	bool SetCPU( const int& CPU, ID3D11DeviceContext* pDeviceContext );
 private:
 	bool InitSentence( SentenceType** ppSentence, size_t maxLength, ID3D11Device* pDevice );
 	bool UpdateSentence( SentenceType* pSentence, const char* text, int x, int y, float red, float green, float blue, ID3D11DeviceContext* pDeviceContext );
@@ -31,4 +33,8 @@ private:
 
 	SentenceType* m_sentence1;
 	SentenceType* m_sentence2;
+
+	SentenceType* m_fps;
+	SentenceType* m_cpu;
+	SentenceType* m_time;
 };

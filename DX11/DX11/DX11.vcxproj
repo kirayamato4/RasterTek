@@ -145,7 +145,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CPU.cpp" />
     <ClCompile Include="FontShader.cpp" />
+    <ClCompile Include="FPS.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WFont.cpp" />
     <ClCompile Include="WImage.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -175,7 +178,10 @@
     <ClCompile Include="WText.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CPU.h" />
     <ClInclude Include="FontShader.h" />
+    <ClInclude Include="FPS.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="WFont.h" />
     <ClInclude Include="WImage.h" />
     <ClInclude Include="Camera.h" />

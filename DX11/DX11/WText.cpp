@@ -37,6 +37,12 @@ bool WText::Init( ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, 
 	if( !InitSentence( &m_sentence2, 16, pDevice ) )
 		return false;
 
+	if( !InitSentence( &m_fps, 32, pDevice ) )
+		return false;
+
+	if( !InitSentence( &m_cpu, 32, pDevice ) )
+		return false;
+
 	return true;
 }
 
@@ -57,6 +63,12 @@ bool WText::Render( ID3D11DeviceContext * pDeviceContext, const XMMATRIX & world
 	if( !RenderSentence( pDeviceContext, m_sentence2, world, ortho ) )
 		return false;
 
+	if( !RenderSentence( pDeviceContext, m_fps, world, ortho ) )
+		return false;
+
+	if( !RenderSentence( pDeviceContext, m_cpu, world, ortho ) )
+		return false;
+
 	return true;
 }
 
@@ -74,6 +86,50 @@ bool WText::SetMousePosition( const POINT & mouse, ID3D11DeviceContext * pDevice
 	posY += std::to_string( y );
 
 	if( !UpdateSentence( m_sentence2, posY.c_str(), 0, 25, 1.0f, 1.0f, 1.0f, pDeviceContext ) )
+		return false;
+
+	return true;
+}
+
+bool WText::SetFPS( const int & FPS, ID3D11DeviceContext * pDeviceContext )
+{
+	int _FPS = FPS > 9999 ? 9999 : FPS;
+	std::string fps = "Fps: ";
+	fps += std::to_string( _FPS );
+
+	XMFLOAT3 color;
+	if( _FPS > 60 )
+	{
+		color.x = 0.0f;
+		color.y = 1.0f;
+		color.z = 0.0f;
+	}
+	else if( _FPS > 30 )
+	{
+		color.x = 1.0f;
+		color.y = 1.0f;
+		color.z = 0.0f;
+	}
+	else
+	{
+		color.x = 1.0f;
+		color.y = 0.0f;
+		color.z = 0.0f;
+	}
+
+	if( !UpdateSentence( m_fps, fps.c_str(), 0, 50, color.x, color.y, color.z, pDeviceContext ) )
+		return false;
+
+	return true;
+}
+
+bool WText::SetCPU( const int & CPU, ID3D11DeviceContext * pDeviceContext )
+{
+	std::string scpu = "Cpu: ";
+	scpu += std::to_string( CPU );
+	scpu += " %";
+
+	if( !UpdateSentence( m_cpu, scpu.c_str(), 0, 75, 0.0f, 1.0f, 0.0f, pDeviceContext ) )
 		return false;
 
 	return true;
