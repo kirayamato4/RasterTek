@@ -4,6 +4,7 @@
 WolfApp::WolfApp()
 	: m_pInputDevice{ nullptr }
 	, m_pRenderer{ nullptr }
+	, m_pSound{ nullptr }
 	, m_pFPS{ nullptr }
 	, m_pCPU{ nullptr }
 	, m_pTimer{ nullptr }
@@ -51,6 +52,10 @@ bool WolfApp::Init()
 		return false;
 	}
 
+	m_pSound = new WSound;
+	if( !m_pSound->Init( m_hWnd ) )
+		return false;
+
 	m_pFPS = new FPS;
 	m_pFPS->Init();
 
@@ -69,6 +74,7 @@ void WolfApp::Release()
 	SAFE_DELETE( m_pTimer );
 	SAFE_TERMINATE( m_pCPU );
 	SAFE_DELETE( m_pFPS );
+	SAFE_TERMINATE( m_pSound );
 	SAFE_TERMINATE( m_pRenderer );
 	SAFE_TERMINATE( m_pInputDevice );
 	SAFE_DELETE( m_pInputDevice );

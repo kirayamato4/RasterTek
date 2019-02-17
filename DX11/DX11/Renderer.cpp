@@ -108,7 +108,7 @@ bool Renderer::Update( const POINT& mouse, const int& FPS, const int& CPU, const
 	}
 	else
 	{
-		rotation += 0.0001;
+		rotation += 0.0001f;
 	}
 	
 	if( rotation > 360.0f )

@@ -50,3 +50,20 @@ struct SentenceType
 
 	SentenceType();
 };
+
+struct WAVE_HEADER
+{
+	char chunkID[ 4 ];
+	unsigned long chunkSize;
+	char format[ 4 ];
+	char subChunkID[ 4 ];
+	unsigned long subChunkSize;
+	unsigned short audioFormat;
+	unsigned short numChannels;
+	unsigned long sampleRate;
+	unsigned long bytesPerSecond;
+	unsigned short blockAlign;
+	unsigned short bitsPerSample;
+	char dataChunkID[ 4 ];
+	unsigned long dataSize;
+};

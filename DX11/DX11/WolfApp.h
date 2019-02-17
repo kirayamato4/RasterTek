@@ -2,6 +2,7 @@
 
 #include "InputDevice.h"
 #include "Renderer.h"
+#include "WSound.h"
 
 #include "FPS.h"
 #include "CPU.h"
@@ -35,6 +36,7 @@ private:
 
 	InputDevice* m_pInputDevice;
 	Renderer* m_pRenderer;
+	WSound* m_pSound;
 
 	FPS*	m_pFPS;
 	CPU*	m_pCPU;

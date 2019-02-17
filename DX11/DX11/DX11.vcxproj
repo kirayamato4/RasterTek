@@ -175,6 +175,7 @@
     <ClCompile Include="WolfApp.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="WSound.cpp" />
     <ClCompile Include="WText.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +199,7 @@
     <ClInclude Include="TextureShader.h" />
     <ClInclude Include="WolfApp.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="WSound.h" />
     <ClInclude Include="WText.h" />
   </ItemGroup>
   <ItemGroup>
