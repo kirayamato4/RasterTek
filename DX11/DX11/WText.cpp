@@ -34,7 +34,7 @@ bool WText::Init( ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, 
 	if( !InitSentence( &m_sentence1, 16, pDevice ) )
 		return false;
 
-	if( !UpdateSentence( m_sentence1, "Hello", 100, 100, 1.0f, 1.0f, 1.0f, pDeviceContext ) )
+	if( !UpdateSentence( m_sentence1, "WindWolf", 100, 100, 1.0f, 1.0f, 1.0f, pDeviceContext ) )
 		return false;
 
 	return true;

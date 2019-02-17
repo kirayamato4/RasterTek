@@ -38,21 +38,23 @@ void WFont::BuildVertexArray( void * vertices, char * sentense, float drawX, flo
 	TextureVertexType* pVertexPtr = (TextureVertexType*)vertices;
 	size_t sentenceLnegh = strlen( sentense );
 
-	constexpr float font_width = 11.3333f;
-	constexpr float font_height = 22.0f;
+	constexpr float font_width = 16.0f;
+	constexpr float font_height = 15.0f;
 
+
+	drawY += 450;
 	size_t index = 0;
 	for( size_t i = 0; i < sentenceLnegh; ++i )
 	{
 		char letter = sentense[ i ];
 
-		if( 0 == letter )
+		if( ' ' == letter )
 		{
 			drawX += font_width;
 		}
 		else
 		{
-			WFontData& data = m_pFontData[ sentense[ i ] - 32 ];
+			WFontData& data = m_pFontData[ sentense[ i ] - 33 ];
 			
 			pVertexPtr[ index ]._pos = XMFLOAT3( drawX, drawY, 0.0f );  // Left Top
 			pVertexPtr[ index ]._tex = XMFLOAT2( data.ltu, data.ttv );
@@ -105,12 +107,21 @@ bool WFont::LoadFontData( const char * fontData )
 		while( std::getline( ss, temp, ',' ) )
 			v.emplace_back( temp );
 
-		size_t index = ( i + 1 ) % 95;
-		m_pFontData[ index ].idx = std::stoi( v[ 0 ] );
-		m_pFontData[ index ].ltu = std::stof( v[ 1 ] );
-		m_pFontData[ index ].rtu = std::stof( v[ 2 ] );
-		m_pFontData[ index ].ttv = std::stof( v[ 3 ] );
-		m_pFontData[ index ].btv = std::stof( v[ 4 ] );
+		// , 예외 처리
+		if( 11 == i )
+		{
+			m_pFontData[ i ].ltu = std::stof( v[ 2 ] );
+			m_pFontData[ i ].rtu = std::stof( v[ 3 ] );
+			m_pFontData[ i ].ttv = std::stof( v[ 4 ] );
+			m_pFontData[ i ].btv = std::stof( v[ 5 ] );
+		}
+		else
+		{
+			m_pFontData[ i ].ltu = std::stof( v[ 1 ] );
+			m_pFontData[ i ].rtu = std::stof( v[ 2 ] );
+			m_pFontData[ i ].ttv = std::stof( v[ 3 ] );
+			m_pFontData[ i ].btv = std::stof( v[ 4 ] );
+		}
 	}
 
 	file.close();

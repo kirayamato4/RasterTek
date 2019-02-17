@@ -141,7 +141,7 @@ bool Renderer::Render( float rotation )
 	matrixBuffer._world *= XMMatrixRotationY( rotation );
 	
 	// Render Start
-	m_pD3DContext->BeginScene( 0.0f, 0.0f, 0.75f, 1.0f );
+	m_pD3DContext->BeginScene( 0.0f, 0.0f, 0.0f, 1.0f );
 	
 	m_pCube->Render( GetDeviceContext() );
 	m_pLightShader->Render( GetDeviceContext(), m_pCube->GetIndexCount(), matrixBuffer, cameraBuffer, lightbuffer, m_pCube->GetTexture() );
