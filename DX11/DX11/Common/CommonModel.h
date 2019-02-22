@@ -67,3 +67,11 @@ struct WAVE_HEADER
 	char dataChunkID[ 4 ];
 	unsigned long dataSize;
 };
+
+struct ModelInfoType
+{
+	XMFLOAT4 _color;
+	float _x;
+	float _y;
+	float _z;
+};

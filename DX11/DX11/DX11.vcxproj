@@ -148,6 +148,8 @@
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="FontShader.cpp" />
     <ClCompile Include="FPS.cpp" />
+    <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="ModelList.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WFont.cpp" />
     <ClCompile Include="WImage.cpp" />
@@ -183,6 +185,8 @@
     <ClInclude Include="CPU.h" />
     <ClInclude Include="FontShader.h" />
     <ClInclude Include="FPS.h" />
+    <ClInclude Include="Frustum.h" />
+    <ClInclude Include="ModelList.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WFont.h" />
     <ClInclude Include="WImage.h" />

@@ -10,6 +10,8 @@ Renderer::Renderer()
 	, m_pImage{ nullptr }
 	, m_pText{ nullptr }
 	, m_pCube{ nullptr }
+	, m_pModelList{ nullptr }
+	, m_pFrustum{ nullptr }
 {
 
 }
@@ -71,14 +73,23 @@ bool Renderer::Init( int width, int height, HWND hWnd )
 
 	m_pCube = new Cube;
 	if( nullptr == m_pCube ) return false;
-	if( !m_pCube->Init( GetDevice(), "Resource/cube.txt", L"Resource/a.dds" ) )
+	if( !m_pCube->Init( GetDevice(), "Resource/sphere.txt", L"Resource/seafloor.dds" ) )
 		return false;
+
+	m_pModelList = new ModelList;
+	if( !m_pModelList->Init( 25 ) )
+		return false;
+
+	m_pFrustum = new Frustum;
 
 	return true;
 }
 
 void Renderer::Terminate()
 {
+	SAFE_DELETE( m_pFrustum );
+	SAFE_TERMINATE( m_pModelList );
+
 	SAFE_TERMINATE( m_pCube );
 
 	SAFE_TERMINATE( m_pText );
@@ -147,17 +158,35 @@ bool Renderer::Render( float rotation )
 
 	CameraBuffer cameraBuffer;
 	cameraBuffer._position = m_pCamera->GetPositionVector();
-	LightBuffer lightbuffer = m_pLight->GetLightBuffer();
+	LightBuffer lightBuffer = m_pLight->GetLightBuffer();
 
+	m_pFrustum->ConstructFrustum( RendererValue::SCREEN_DEPTH, matrixBuffer._projection, matrixBuffer._view );
+	size_t modelCount = m_pModelList->GetModelCount();
 
-	matrixBuffer._world *= XMMatrixRotationY( rotation );
-	
+	float x, y, z;
+	XMFLOAT4 color;
+	float radius = 1.0f;
+
 	// Render Start
 	m_pD3DContext->BeginScene( 0.0f, 0.0f, 0.0f, 1.0f );
-	
-	// Render 3D
-	m_pCube->Render( GetDeviceContext() );
-	m_pLightShader->Render( GetDeviceContext(), m_pCube->GetIndexCount(), matrixBuffer, cameraBuffer, lightbuffer, m_pCube->GetTexture() );
+
+	for( size_t i = 0; i < modelCount; ++i )
+	{
+		m_pModelList->GetData( i, x, y, z, color );
+
+		bool check = m_pFrustum->CheckSphere( x, y, z, radius );
+		if( !check ) continue;
+
+		matrixBuffer._world = XMMatrixTranslation( x, y, z );
+		matrixBuffer._world *= XMMatrixRotationY( rotation );
+
+		lightBuffer._diffuse = color;
+
+
+		// Render 3D
+		m_pCube->Render( GetDeviceContext() );
+		m_pLightShader->Render( GetDeviceContext(), m_pCube->GetIndexCount(), matrixBuffer, cameraBuffer, lightBuffer, m_pCube->GetTexture() );
+	}
 
 	// ZBuffer Off
 	m_pD3DContext->ZBufferOff();

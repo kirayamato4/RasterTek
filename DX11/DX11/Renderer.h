@@ -8,6 +8,8 @@
 #include "Cube.h"
 #include "WImage.h"
 #include "WText.h"
+#include "ModelList.h"
+#include "Frustum.h"
 
 namespace RendererValue	// Graphics Class Value
 {
@@ -47,4 +49,7 @@ private:
 	WText* m_pText;
 	
 	Cube* m_pCube;
+
+	ModelList* m_pModelList;
+	Frustum* m_pFrustum;
 };

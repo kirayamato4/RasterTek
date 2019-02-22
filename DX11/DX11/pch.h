@@ -70,6 +70,8 @@ using namespace DirectX;
 #include <fstream>
 #include <sstream>
 
+#include <ctime>
+
 static HWND g_hWnd;
 static wchar_t g_BoxStr[ 512 ];
 
