@@ -110,3 +110,14 @@ void Camera::MoveRight()
 {
 	m_px += 0.05f;
 }
+
+
+void Camera::MoveUp()
+{
+	m_py += 0.05f;
+}
+
+void Camera::MoveDown()
+{
+	m_py -= 0.05f;
+}

@@ -63,6 +63,7 @@ using namespace DirectX;
 
 // STL header
 #include <vector>
+#include <unordered_set>
 
 // C++ header
 #include <iostream>

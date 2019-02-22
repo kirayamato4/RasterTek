@@ -125,6 +125,8 @@ void Renderer::CameraUpdate( unsigned int key )
 		case DIK_DOWN:	m_pCamera->MoveBackward();	break;
 		case DIK_LEFT:	m_pCamera->MoveLeft();		break;
 		case DIK_RIGHT:	m_pCamera->MoveRight();		break;
+		case DIK_W: m_pCamera->MoveUp(); break;
+		case DIK_S: m_pCamera->MoveDown(); break;
 	}
 
 	m_pCamera->Update();

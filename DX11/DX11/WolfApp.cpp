@@ -155,6 +155,12 @@ bool WolfApp::Update()
 	if( m_pInputDevice->IsKeyDown( DIK_RIGHT ) )
 		m_pRenderer->CameraUpdate( DIK_RIGHT );
 
+	if( m_pInputDevice->IsKeyDown( DIK_W ) )
+		m_pRenderer->CameraUpdate( DIK_W );
+
+	if( m_pInputDevice->IsKeyDown( DIK_S ) )
+		m_pRenderer->CameraUpdate( DIK_S );
+
 
 	m_pFPS->Update();
 	m_pCPU->Update();

@@ -25,6 +25,9 @@
     <Filter Include="Common">
       <UniqueIdentifier>{a6a732b7-f50f-4608-814f-d24ffa5734e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{c75645b0-c2f6-4870-94d3-809c7f083667}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -96,6 +99,9 @@
     <ClCompile Include="WSound.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="WShader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -162,6 +168,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="WSound.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WShader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

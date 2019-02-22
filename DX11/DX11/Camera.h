@@ -25,6 +25,8 @@ public:
 	void MoveBackward();
 	void MoveLeft();
 	void MoveRight();
+	void MoveUp();
+	void MoveDown();
 
 private:
 	float m_px;

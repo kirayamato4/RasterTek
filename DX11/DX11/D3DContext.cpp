@@ -263,6 +263,7 @@ bool D3DContext::Init( int width, int height, bool vsync, HWND hWnd, bool fullsc
 	m_pDeviceContext->RSSetViewports( 1, &viewport );
 #pragma endregion
 
+
 	float fieldOfView = 3.141592654f / 4.0f;
 	float screenAspect = (float)width / (float)height;
 
