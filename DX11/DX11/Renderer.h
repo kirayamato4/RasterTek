@@ -28,7 +28,7 @@ public:
 
 	bool Init( int width, int height, HWND hWnd );
 	void Terminate();
-	bool Update( const POINT& mouse, const int& FPS, const int& CPU, const float& Time );
+	bool Update( const POINT& mouse, const int& FPS, const int& CPU, const float& Time, const float& rotateY );
 
 	void CameraUpdate( unsigned int key );
 

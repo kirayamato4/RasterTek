@@ -1,3 +1,4 @@
+#include "..\WindWolf\Renderer.h"
 #include "pch.h"
 #include "Renderer.h"
 
@@ -102,7 +103,7 @@ void Renderer::Terminate()
 	SAFE_TERMINATE( m_pD3DContext );
 }
 
-bool Renderer::Update( const POINT& mouse, const int& FPS, const int& CPU, const float& Time )
+bool Renderer::Update( const POINT& mouse, const int& FPS, const int& CPU, const float& Time, const float& rotateY )
 {
 	m_pText->SetMousePosition( mouse, GetDeviceContext() );
 	m_pText->SetFPS( FPS, GetDeviceContext() );
@@ -125,7 +126,7 @@ bool Renderer::Update( const POINT& mouse, const int& FPS, const int& CPU, const
 	if( rotation > 360.0f )
 		rotation -= 360.0f;
 
-	return Render( rotation );
+	return Render( rotateY );
 }
 
 void Renderer::CameraUpdate( unsigned int key )
@@ -167,6 +168,8 @@ bool Renderer::Render( float rotation )
 	XMFLOAT4 color;
 	float radius = 1.0f;
 
+	size_t renderCount = 0;
+
 	// Render Start
 	m_pD3DContext->BeginScene( 0.0f, 0.0f, 0.0f, 1.0f );
 
@@ -179,13 +182,14 @@ bool Renderer::Render( float rotation )
 
 		matrixBuffer._world = XMMatrixTranslation( x, y, z );
 		matrixBuffer._world *= XMMatrixRotationY( rotation );
-
 		lightBuffer._diffuse = color;
 
 
 		// Render 3D
 		m_pCube->Render( GetDeviceContext() );
 		m_pLightShader->Render( GetDeviceContext(), m_pCube->GetIndexCount(), matrixBuffer, cameraBuffer, lightBuffer, m_pCube->GetTexture() );
+
+		++renderCount;
 	}
 
 	// ZBuffer Off

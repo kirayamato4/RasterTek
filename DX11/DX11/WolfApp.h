@@ -7,6 +7,7 @@
 #include "FPS.h"
 #include "CPU.h"
 #include "Timer.h"
+#include "Position.h"
 
 class WolfApp
 	: public Align16
@@ -41,6 +42,7 @@ private:
 	FPS*	m_pFPS;
 	CPU*	m_pCPU;
 	WTimer* m_pTimer;
+	Position* m_pPosition;
 };
 
 static WolfApp* gWolfApp = nullptr;

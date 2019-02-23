@@ -8,6 +8,7 @@ WolfApp::WolfApp()
 	, m_pFPS{ nullptr }
 	, m_pCPU{ nullptr }
 	, m_pTimer{ nullptr }
+	, m_pPosition{ nullptr }
 {
 	m_AppName = L"WindWolf";
 	m_ClassName = L"WindWolf";
@@ -66,11 +67,14 @@ bool WolfApp::Init()
 	if( !m_pTimer->Init() )
 		return false;
 
+	m_pPosition = new Position;
+
 	return true;
 }
 
 void WolfApp::Release()
 {
+	SAFE_DELETE( m_pPosition );
 	SAFE_DELETE( m_pTimer );
 	SAFE_TERMINATE( m_pCPU );
 	SAFE_DELETE( m_pFPS );
@@ -141,7 +145,7 @@ bool WolfApp::Update()
 	if( !m_pInputDevice->Update() )
 		return false;
 
-	m_pInputDevice->GetMousePosition( mouse );
+	/*m_pInputDevice->GetMousePosition( mouse );
 
 	if( m_pInputDevice->IsKeyDown( DIK_UP ) )
 		m_pRenderer->CameraUpdate( DIK_UP );
@@ -159,13 +163,25 @@ bool WolfApp::Update()
 		m_pRenderer->CameraUpdate( DIK_W );
 
 	if( m_pInputDevice->IsKeyDown( DIK_S ) )
-		m_pRenderer->CameraUpdate( DIK_S );
+		m_pRenderer->CameraUpdate( DIK_S );*/
+
+	m_pTimer->Update();
+	m_pPosition->SetFrameTime( m_pTimer->GetTime() );
+
+	if( m_pInputDevice->IsKeyDown( DIK_LEFT ) )
+		m_pPosition->TurnLeft( true );
+
+	if( m_pInputDevice->IsKeyDown( DIK_RIGHT ) )
+		m_pPosition->TurnRight( true );
+
+	float rotateY;
+	m_pPosition->GetRotation( rotateY );
 
 
 	m_pFPS->Update();
 	m_pCPU->Update();
 	m_pTimer->Update();
-	if( !m_pRenderer->Update( mouse, m_pFPS->GetFPS(), m_pCPU->GetCPUUsage(), m_pTimer->GetTime() ) )
+	if( !m_pRenderer->Update( mouse, m_pFPS->GetFPS(), m_pCPU->GetCPUUsage(), m_pTimer->GetTime(), rotateY ) )
 		return false;
 
 	return true;
