@@ -1,6 +1,7 @@
 #pragma once
 
 #include "D3DContext.h"
+#include "WShaderMan.h"
 
 class Renderer
 {
@@ -21,4 +22,5 @@ private:
 
 private:
 	D3DContext* m_pD3DContext = nullptr;
+	WShaderMan* m_pShaderMan = nullptr;
 };

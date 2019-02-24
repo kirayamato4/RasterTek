@@ -18,11 +18,19 @@ bool Renderer::Init( int width, int height, HWND hWnd )
 
 	if( !m_pD3DContext->Init( width, height, true, hWnd, false, 0.1f, 1000.0f ) )
 		return false;
+
+	m_pShaderMan = new WShaderMan;
+	if (nullptr == m_pShaderMan)
+		return false;
+
+	if (!m_pShaderMan->Init(GetDevice()))
+		return false;
 	
 	return true;
 }
 void Renderer::Terminate()
 {
+	SAFE_TERMINATE(m_pShaderMan);
 	SAFE_TERMINATE( m_pD3DContext );
 }
 bool Renderer::Update()
