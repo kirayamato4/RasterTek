@@ -37,6 +37,7 @@ public:
 	virtual void Terminate() override;
 
 	ID3D11VertexShader* GetVertexShader() const;
+	ID3D11InputLayout* GetInputLayout() const;
 
 protected:
 	virtual bool CompileShader(ID3D11Device* pDevice, D3D11_INPUT_ELEMENT_DESC* layoutDesc, UINT layoutCount);
@@ -58,7 +59,7 @@ public:
 	virtual bool Init(ID3D11Device* pDevice);
 	virtual void Terminate() override;
 
-	ID3D11PixelShader* GetVertexShader() const;
+	ID3D11PixelShader* GetPixelShader() const;
 
 protected:
 	virtual bool CompileShader(ID3D11Device* pDevice);

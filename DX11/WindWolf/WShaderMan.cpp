@@ -26,7 +26,26 @@ void WShaderMan::Terminate()
 	{
 		m_aPixelShader[i].Terminate();
 		m_aVertexShader[i].Terminate();
+		m_aShaderBuffer[i].Terminate();
 	}
+}
+
+void WShaderMan::SetShader(ID3D11DeviceContext * pDeviceContext, SHADER_TYPE type)
+{
+	WVertexShader& vs = m_aVertexShader[type];
+	WPixelShader& ps = m_aPixelShader[type];
+
+	pDeviceContext->IASetInputLayout(vs.GetInputLayout());
+
+	pDeviceContext->VSSetShader(vs.GetVertexShader(), nullptr, 0);
+	pDeviceContext->PSSetShader(ps.GetPixelShader(), nullptr, 0);
+}
+
+bool WShaderMan::UpdateColorShader(ID3D11DeviceContext * pDeviceContext, ColorMatrixBuffer & matrixBuffer)
+{
+	WShaderBuffer& sb = m_aShaderBuffer[SHADER_TYPE::COLOR];
+
+	return sb.Update( pDeviceContext, matrixBuffer );
 }
 
 bool WShaderMan::InitColorShader(ID3D11Device* pDevice)
@@ -72,6 +91,18 @@ bool WShaderMan::InitColorShader(ID3D11Device* pDevice)
 	if (!m_aPixelShader[type].Init(pDevice))
 		return false;
 
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	bufferDesc.ByteWidth = sizeof(ColorMatrixBuffer);
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bufferDesc.MiscFlags = 0;
+	bufferDesc.StructureByteStride = 0;
+
+	if (!m_aShaderBuffer[type].Init(pDevice, &bufferDesc))
+		return false;
+
 	return true;
 }
 
@@ -79,3 +110,4 @@ bool WShaderMan::InitTextureShader(ID3D11Device* pDevice)
 {
 	return true;
 }
+

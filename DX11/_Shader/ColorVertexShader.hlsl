@@ -1,4 +1,4 @@
-cbuffer MatrixBuffer
+cbuffer ColorMatrixBuffer
 {
 	matrix world;
 	matrix view;

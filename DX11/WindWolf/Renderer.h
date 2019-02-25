@@ -2,6 +2,9 @@
 
 #include "D3DContext.h"
 #include "WShaderMan.h"
+#include "Camera.h"
+#include "WScreen.h"
+
 
 class Renderer
 {
@@ -23,4 +26,7 @@ private:
 private:
 	D3DContext* m_pD3DContext = nullptr;
 	WShaderMan* m_pShaderMan = nullptr;
+
+	Camera* m_pCamera = nullptr;
+	WScreen* m_pScreen = nullptr;
 };

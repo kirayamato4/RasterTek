@@ -68,6 +68,11 @@ ID3D11VertexShader * WVertexShader::GetVertexShader() const
 	return m_pVertexShader;
 }
 
+ID3D11InputLayout * WVertexShader::GetInputLayout() const
+{
+	return m_pInputLayout;
+}
+
 bool WVertexShader::CompileShader(ID3D11Device* pDevice, D3D11_INPUT_ELEMENT_DESC* layoutDesc, UINT layoutCount)
 {
 	ID3D10Blob* pShaderBuffer = nullptr;
@@ -150,7 +155,7 @@ void WPixelShader::Terminate()
 	SAFE_RELEASE(m_pPixelShader);
 }
 
-ID3D11PixelShader * WPixelShader::GetVertexShader() const
+ID3D11PixelShader * WPixelShader::GetPixelShader() const
 {
 	return m_pPixelShader;
 }

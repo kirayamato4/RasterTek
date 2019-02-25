@@ -57,3 +57,5 @@ __declspec( align( 16 ) ) struct Allocate16
 		_mm_free( memory );
 	}
 };
+
+#include "Common.h"

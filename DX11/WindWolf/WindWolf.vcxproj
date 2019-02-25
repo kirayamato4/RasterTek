@@ -142,6 +142,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\_Common\DDSTextureLoader.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Common.cpp" />
     <ClCompile Include="D3DContext.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="pch.cpp">
@@ -153,17 +155,23 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="WolfAppBase.cpp" />
+    <ClCompile Include="WScreen.cpp" />
     <ClCompile Include="WShader.cpp" />
+    <ClCompile Include="WShaderBuffer.cpp" />
     <ClCompile Include="WShaderMan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\_Common\DDSTextureLoader.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Common.h" />
     <ClInclude Include="D3DContext.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="WolfAppBase.h" />
+    <ClInclude Include="WScreen.h" />
     <ClInclude Include="WShader.h" />
+    <ClInclude Include="WShaderBuffer.h" />
     <ClInclude Include="WShaderMan.h" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +182,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ColorPixel</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ColorPixel</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ColorPixel</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ColorPixel</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="..\_Shader\ColorVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
@@ -182,6 +196,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ColorVertex</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ColorVertex</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ColorVertex</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ColorVertex</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
