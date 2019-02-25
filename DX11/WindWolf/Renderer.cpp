@@ -57,7 +57,7 @@ bool Renderer::Update()
 	ColorMatrixBuffer colorBuffer;
 	colorBuffer._world = m_pD3DContext->GetWorld();
 	colorBuffer._view = m_pCamera->GetViewMatrix();
-	colorBuffer._projection = m_pD3DContext->GetProjection();
+	colorBuffer._projection = m_pD3DContext->GetOrtho();
 	
 	m_pShaderMan->UpdateColorShader(GetDeviceContext(), colorBuffer);
 

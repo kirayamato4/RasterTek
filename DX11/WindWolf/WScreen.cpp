@@ -48,23 +48,26 @@ bool WScreen::InitBuffer(ID3D11Device * pDevice)
 
 	XMFLOAT4 color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
+	float w = m_width / 2.0f;
+	float h = m_height / 2.0f;
+
 	// Left Bottom
-	vertices[0]._pos = XMFLOAT3(-1.0f, -1.0f,  0.0f);
+	vertices[0]._pos = XMFLOAT3(-w, -h,  0.0f);
 	vertices[0]._color = color;
 	// Left Top
-	vertices[1]._pos = XMFLOAT3(-1.0f,  1.0f,  0.0f);
+	vertices[1]._pos = XMFLOAT3(-w,  h,  0.0f);
 	vertices[1]._color = color;
 	// Right Bottom
-	vertices[2]._pos = XMFLOAT3( 1.0f, -1.0f,  0.0f);
+	vertices[2]._pos = XMFLOAT3( w, -h,  0.0f);
 	vertices[2]._color = color;
 	// Right Bottom
-	vertices[3]._pos = XMFLOAT3( 1.0f, -1.0f,  0.0f);
+	vertices[3]._pos = XMFLOAT3( w, -h,  0.0f);
 	vertices[3]._color = color;
 	// Left Top
-	vertices[4]._pos = XMFLOAT3(-1.0f,  1.0f,  0.0f);
+	vertices[4]._pos = XMFLOAT3(-w,  h,  0.0f);
 	vertices[4]._color = color;
 	// Right Top
-	vertices[5]._pos = XMFLOAT3( 1.0f,  1.0f,  0.0f);
+	vertices[5]._pos = XMFLOAT3( w,  h,  0.0f);
 	vertices[5]._color = color;
 
 	D3D11_BUFFER_DESC vbDesc;
